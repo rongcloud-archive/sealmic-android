@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="text_white">#fff</color>
+    <color name="text_black">#2E2E2E</color>
+    <color name="text_gray">#666666</color>
+    <color name="text_light_gray">#999999</color>
+    <color name="text_blue">#5E85FA</color>
+    <color name="text_blue_light">#7A9AF9</color>
+    <color name="setting_background">#F7F7F7</color>
+    <color name="setting_item_bg">#D8D8D8</color>
+    <color name="setting_item_text">#333333</color>
+    <color name="setting_chatroom_backgroud_bg">#F5F5F5</color>
+    <color name="setting_chatroom_title_font">#5D7DFA</color>
+    <color name="separate_line_gray">#E7E7E7</color>
+    <color name="common_edge_gray">#999999</color>
+    <color name="white">#fff</color>
+
+    <color name="action_bar_title_color">#999999</color>
+    <color name="rc_seal_mic_rv_color">#F5F5F5</color>
+    <color name="rv_item_text_color">#8F8F8F</color>
+    <color name="rc_item_number_textColor">#FFFFFF</color>
+    <color name="room_name_text_color">#DE000000</color>
+    <color name="room_edit_text_color">#FF999999</color>
+</resources>

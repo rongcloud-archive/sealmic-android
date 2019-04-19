@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/chatroom_item_chatlist_iv_avatar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        tools:src="@drawable/chatroom_user_avatar_02" />
+
+    <TextView
+        android:id="@+id/chatroom_item_chatlist_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/chatroom_item_chatlist_iv_avatar"
+        android:layout_alignBottom="@id/chatroom_item_chatlist_iv_avatar"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/chatroom_item_chatlist_iv_avatar"
+        android:gravity="center"
+        android:textColor="@color/text_light_gray"
+        android:textSize="10dp"
+        tools:text="周围" />
+
+    <TextView
+        android:id="@+id/chatroom_item_chatlit_tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chatroom_item_chatlist_tv_nickname"
+        android:layout_alignLeft="@id/chatroom_item_chatlist_tv_nickname"
+        android:background="@drawable/chatroom_bg_chatlist_chat"
+        android:paddingLeft="10dp"
+        android:paddingTop="4dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/text_white"
+        android:textSize="12dp"
+        tools:text="你们在玩什么" />
+</RelativeLayout>

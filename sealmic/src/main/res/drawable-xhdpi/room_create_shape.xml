@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape>
+            <corners android:radius="@dimen/topics_radius" />
+
+            <!--实现应用背景颜色渐变-->
+            <gradient
+                android:startColor="#FF5B6FFA"
+                android:endColor="#FF5E86FA"
+                android:angle="270"/>
+        </shape>
+
+    </item>
+</selector>

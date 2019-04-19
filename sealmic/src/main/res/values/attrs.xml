@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MicSeatRippleView">
+        <attr name="color" format="color" />
+        <attr name="speed" format="float" />
+        <attr name="density" format="integer" />
+        <attr name="isFill" format="boolean" />
+        <attr name="isAlpha" format="boolean" />
+        <attr name="startOffset" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="RoomManagerRippleView">
+        <attr name="firstColor" format="color" />
+        <attr name="secondColor" format="color" />
+        <attr name="startRadius" format="dimension" />
+        <attr name="maxRadius" format="dimension" />
+        <attr name="duration" format="integer" />
+    </declare-styleable>
+</resources>

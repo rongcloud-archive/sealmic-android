@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/bottom_dialog_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:padding="15dp"
+            android:src="@drawable/bottom_dialog_close" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="@dimen/ll_padding_top"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/ll_padding"
+        android:paddingRight="@dimen/ll_padding">
+
+        <TextView
+            android:id="@+id/room_name"
+            android:layout_width="@dimen/room_name_width"
+            android:layout_height="@dimen/room_name_height"
+            android:text="@string/room_name"
+            android:textColor="@color/room_name_text_color"
+            android:textSize="@dimen/room_name_text_size" />
+
+        <EditText
+            android:id="@+id/room_edit_text"
+            android:layout_width="@dimen/room_edit_text_width"
+            android:layout_height="@dimen/room_edit_text_height"
+            android:background="@drawable/room_edit_shape"
+            android:drawableLeft="@drawable/room_edit_cursor_drawable"
+            android:drawablePadding="@dimen/room_edit_text_drawablePadding"
+            android:hint="@string/room_edit_hint_text"
+            android:maxLength="15"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/room_edit_text_paddingLeft"
+            android:textColor="@color/text_black"
+            android:textColorHint="@color/room_edit_text_color"
+            android:textSize="@dimen/room_edit_text_size" />
+
+        <TextView
+            android:id="@+id/random"
+            android:layout_width="@dimen/random_width"
+            android:layout_height="@dimen/random_height"
+            android:layout_marginLeft="@dimen/random_marginLeft"
+            android:background="@drawable/random_shape"
+            android:gravity="center"
+            android:text="@string/random_text"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/random_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_topics_line_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ll_topics_line_1_marginTop"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/ll_padding">
+
+        <TextView
+            android:id="@+id/topics_1"
+            android:layout_width="@dimen/topics_width"
+            android:layout_height="@dimen/topics_height"
+            android:background="@drawable/topics_shape"
+            android:gravity="center"
+            android:text="@string/topics_1_text"
+            android:textColor="@drawable/topics_color"
+            android:textSize="@dimen/topics_text_size" />
+
+        <TextView
+            android:id="@+id/topics_2"
+            android:layout_width="@dimen/topics_width"
+            android:layout_height="@dimen/topics_height"
+            android:layout_marginLeft="@dimen/topics_margin_left"
+            android:background="@drawable/topics_shape"
+            android:gravity="center"
+            android:text="@string/topics_2_text"
+            android:textColor="@drawable/topics_color"
+            android:textSize="@dimen/topics_text_size" />
+
+        <TextView
+            android:id="@+id/topics_3"
+            android:layout_width="@dimen/topics_width"
+            android:layout_height="@dimen/topics_height"
+            android:layout_marginLeft="@dimen/topics_margin_left"
+            android:background="@drawable/topics_shape"
+            android:gravity="center"
+            android:text="@string/topics_3_text"
+            android:textColor="@drawable/topics_color"
+            android:textSize="@dimen/topics_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_topics_line_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ll_topics_line_2_marginTop"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/ll_padding">
+
+        <TextView
+            android:id="@+id/topics_4"
+            android:layout_width="@dimen/topics_width"
+            android:layout_height="@dimen/topics_height"
+            android:background="@drawable/topics_shape"
+            android:gravity="center"
+            android:text="@string/topics_4_text"
+            android:textColor="@drawable/topics_color"
+            android:textSize="@dimen/topics_text_size" />
+
+        <TextView
+            android:id="@+id/topics_5"
+            android:layout_width="@dimen/topics_width"
+            android:layout_height="@dimen/topics_height"
+            android:layout_marginLeft="@dimen/topics_margin_left"
+            android:background="@drawable/topics_shape"
+            android:gravity="center"
+            android:text="@string/topics_5_text"
+            android:textColor="@drawable/topics_color"
+            android:textSize="@dimen/topics_text_size" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/room_create"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/room_create_marginTop"
+        android:layout_width="@dimen/room_create_width"
+        android:layout_height="@dimen/room_create_height"
+        android:background="@drawable/room_create_shape"
+        android:gravity="center"
+        android:text="@string/room_create_text"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/room_create_text_size" />
+</LinearLayout>

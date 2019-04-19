@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="room_topic_pool">
+        <item>融云RongCloud</item>
+        <item>嗨唱屋</item>
+        <item>你耳边的治愈系</item>
+        <item>来自电影里的故事</item>
+        <item>怀旧好声音</item>
+        <item>邻居的耳朵</item>
+        <item>这里有你喜欢的话题</item>
+        <item>你会讲笑话吗</item>
+        <item>真心话大冒险</item>
+        <item>七鬼五二三</item>
+    </string-array>
+
+    <string-array name="user_nick_name_pool">
+        <item>Louis</item>
+        <item>Blake</item>
+        <item>Marjorie John</item>
+        <item>Angelo Owen</item>
+        <item>Miriam Jane</item>
+        <item>Miles Shaw</item>
+        <item>Omar Nick</item>
+        <item>Amelia Harold</item>
+        <item>Astrid Dierser</item>
+        <item>Sheila Bellamy</item>
+        <item>Kama Larkin</item>
+        <item>Marshall Ford</item>
+        <item>Rose Emily</item>
+        <item>Bess Petty</item>
+        <item>Ron Lincoln</item>
+        <item>Lester Brown</item>
+        <item>Greg Motley</item>
+        <item>Alva Kitto</item>
+        <item>Vita Bill</item>
+        <item>Hilary Gill</item>
+        <item>Prima Eveline</item>
+        <item>Boyce May</item>
+        <item>Lisa Titus</item>
+        <item>Rita Cook</item>
+        <item>May Occam</item>
+        <item>Merry Austen</item>
+        <item>Jamie Frank</item>
+        <item>Tracy</item>
+        <item>Victoria Paul</item>
+        <item>Arvin Louis</item>
+        <item>Virginia Harry</item>
+        <item>Marlon Judith</item>
+        <item>Yetta Stephen</item>
+        <item>Mick Ruth</item>
+        <item>Glenn Thomas</item>
+        <item>Emma Amelia</item>
+        <item>Avery Fred</item>
+        <item>Lynn Agnes</item>
+        <item>Kama Bart</item>
+        <item>Carr Croft</item>
+        <item>Delia</item>
+        <item>Setlla Powell</item>
+        <item>Lionel Rob</item>
+        <item>Kevin Bloomer</item>
+        <item>Haley Piers</item>
+        <item>Max Harold</item>
+        <item>Vivian Hope</item>
+        <item>Mike Ella</item>
+        <item>Archer Clare</item>
+        <item>Maria Trollpoe</item>
+        <item>Elliot Leigh</item>
+        <item>Emily Hobbes</item>
+        <item>Primo Donne</item>
+        <item>Omar Winifred</item>
+        <item>James Herty</item>
+        <item>Griffith Anna</item>
+        <item>Adela Lynd</item>
+        <item>Nelly</item>
+        <item>Burnell Pollitt</item>
+        <item>Cynthia Richards</item>
+        <item>Miles Norris</item>
+        <item>Rae Wallis</item>
+        <item>Eve Carpenter</item>
+        <item>Vera Herty</item>
+        <item>Tracy Carey</item>
+        <item>Chasel Sidney</item>
+        <item>Judy Back</item>
+        <item>Elva Dick</item>
+        <item>Bridget Esther</item>
+        <item>Clark Webb</item>
+        <item>Len Lucius</item>
+        <item>Eileen Palmer</item>
+        <item>Boris Ruth</item>
+        <item>Jean Van</item>
+        <item>Kristin Crofts</item>
+        <item>Judith Joe</item>
+        <item>Gale Woolf</item>
+        <item>Simon Wild</item>
+        <item>Maurice Nora</item>
+        <item>Isaac Ingersoll</item>
+        <item>Bob Bert</item>
+        <item>Regan Gracie</item>
+        <item>Ophelia Pope</item>
+        <item>Duke Stowe</item>
+        <item>Ivan Bill</item>
+        <item>Elsa</item>
+        <item>Nat Lucy</item>
+        <item>Giles</item>
+        <item>Elma</item>
+        <item>Mick Aly</item>
+        <item>Erin</item>
+        <item>Alva Gill</item>
+        <item>Fanny</item>
+        <item>Mavis</item>
+        <item>Larry Ann</item>
+        <item>Antonio</item>
+        <item>Nick Nell</item>
+        <item>Kitty Ernest</item>
+        <item>Peter Delia</item>
+        <item>Vic</item>
+    </string-array>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/room_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/random_iv"
+            android:layout_width="@dimen/rv_item_width"
+            android:layout_height="@dimen/rv_item_height"
+            android:src="@drawable/random_portrait_1" />
+
+
+        <TextView
+            android:id="@+id/rc_item_number"
+            android:layout_width="@dimen/rv_item_number_width"
+            android:layout_height="@dimen/rv_item_number_height"
+            android:layout_alignRight="@+id/random_iv"
+            android:layout_alignBottom="@+id/random_iv"
+            android:layout_marginRight="@dimen/rv_item_number_marginRight"
+            android:layout_marginBottom="@dimen/rv_item_number_marginBottom"
+            android:background="@drawable/rc_item_number_shape"
+            android:gravity="center"
+            android:textColor="@color/rc_item_number_textColor"
+            android:textSize="@dimen/rc_item_number_textSize" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/rv_item_subject"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rv_item_text_height"
+        android:maxLines="1"
+        android:textColor="@color/rv_item_text_color"
+        android:ellipsize="end"
+        android:textSize="@dimen/rv_item_text_size" />
+</LinearLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/text_black"
+    >
+    <ImageView
+        android:id="@+id/chatroom_item_chatlist_iv_avatar"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        tools:src="@drawable/chatroom_user_avatar_02" />
+
+    <TextView
+        android:id="@+id/chatroom_item_chatlist_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/chatroom_item_chatlist_iv_avatar"
+        android:layout_alignBottom="@id/chatroom_item_chatlist_iv_avatar"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/chatroom_item_chatlist_iv_avatar"
+        android:gravity="center"
+        android:textColor="@color/text_blue"
+        android:textSize="12dp"
+        tools:text="周围" />
+
+    <TextView
+        android:id="@+id/chatroom_item_chatlit_tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/chatroom_item_chatlist_tv_nickname"
+        android:layout_alignTop="@id/chatroom_item_chatlist_tv_nickname"
+        android:layout_alignBottom="@id/chatroom_item_chatlist_tv_nickname"
+        android:textColor="@color/text_blue"
+        android:layout_marginLeft="8dp"
+        android:gravity="center"
+        android:textSize="12dp"
+        tools:text="加入房间" />
+</RelativeLayout>

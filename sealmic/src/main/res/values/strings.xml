@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">SealMic</string>
+
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="save">保存</string>
+    <string name="room_send_message_hint">说点什么吧&#8230;</string>
+    <string name="room_title_format" formatted="true">%1$s(%2$d人)</string>
+
+    <string name="mic_cmd_pick_mic">抱麦</string>
+    <string name="mic_cmd_lock_mic">锁麦</string>
+    <string name="mic_cmd_unlock_mic">解锁麦</string>
+    <string name="mic_cmd_forbidden">禁麦</string>
+    <string name="mic_cmd_unforbidden">解禁</string>
+    <string name="mic_cmd_kick_off">踢麦</string>
+    <string name="mic_cmd_jump_down">下麦</string>
+
+    <string name="chatroom_user_enter">进入房间</string>
+    <string name="chatroom_user_quit">离开房间</string>
+
+    <string name="chatroom_setting">房间设置</string>
+    <string name="chatroom_setting_background">房间背景</string>
+    <string name="seal_mic_name">聊天室</string>
+    <string name="room_name">房间名称:</string>
+    <string name="room_edit_hint_text">名称最多支持15个字</string>
+    <string name="random_text">随机话题</string>
+    <string name="topics_1_text">开黑聊天室</string>
+    <string name="topics_2_text">休闲游戏</string>
+    <string name="topics_3_text">娱乐聊天室</string>
+    <string name="topics_4_text">K歌房</string>
+    <string name="topics_5_text">语音电台</string>
+    <string name="room_create_text">创建房间</string>
+    <string name="chatroom_invite_audience_item_btn">上麦</string>
+    <string name="chatroom_invite_audience_title">请选择你要邀请的观众：</string>
+    <string name="chatroom_invite_audience_empty">暂无观众</string>
+    <string name="loading_for_wait">正在加载更多</string>
+    <string name="chatroom_list_load_completed">没有更多数据</string>
+    <string name="chatroom_info_error">房间信息错误!</string>
+    <string name="chatroom_setting_exit_room">退出房间</string>
+    <string name="toast_chatroom_kick_off_from_room">房主将您请出的房间</string>
+    <string name="toast_chatroom_room_manager_exit_room">房主退出了房间</string>
+    <string name="toast_press_back_one_more_to_exit">再按一次退出SealMic</string>
+    <string name="toast_joining_room">正在加入房间</string>
+    <string name="toast_join_room_success">加入房间成功</string>
+    <string name="toast_creating_room">正在创建房间</string>
+    <string name="toast_create_room_success">创建房间成功</string>
+    <string name="toast_room_exist_over_time_limit">房间有效时间已到</string>
+
+    <string name="toast_error_network">网络错误，请稍后再尝试</string>
+    <string name="toast_error_server_request">请求失败，请稍后再尝试</string>
+    <string name="toast_error_im_request">即时通讯出错，请稍后再尝试</string>
+    <string name="toast_error_rtc_request">语音通信出错，请稍后再尝试</string>
+    <string name="toast_error_unkown">发生错误</string>
+    <string name="toast_error_login_failed">连接失败，请下拉刷新进行重试</string>
+    <string name="toast_login_success">服务连接成功</string>
+    <string name="toast_error_im_send_message">发送消息失败，请稍后再尝试</string>
+    <string name="toast_error_not_in_room">获取房间信息失败,请重新加入房间</string>
+    <string name="toast_error_need_app_permission">应用需要语音相关权限</string>
+    <string name="toast_error_none_room_type">请选择话题类型</string>
+    <string name="toast_error_invalid_room_title">"请输入房间名称"</string>
+    <string name="toast_error_mic_position_has_been_hold">此麦位上已有其他人</string>
+    <string name="toast_error_create_room_over_limit">当前房间总数量已超过上限</string>
+    <string name="toast_error_room_member_over_limit">当前房间人数已满</string>
+    <string name="toast_error_leave_room_because_error">连接房间失败，请稍后再尝试</string>
+    <string name="toast_error_user_already_on_other_position">用户已在其他麦位上</string>
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:paddingRight="15dp"
+    android:paddingLeft="15dp"
+    android:descendantFocusability="blocksDescendants"
+    >
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_centerVertical="true"
+        />
+    <TextView
+        android:id="@+id/tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:layout_toRightOf="@id/iv_avatar"
+        android:textSize="13dp"
+        android:textColor="@color/text_gray"
+        android:layout_marginLeft="9dp"
+        android:layout_centerVertical="true"
+        />
+    
+    <Button
+        android:id="@+id/btn_join"
+        android:layout_width="75dp"
+        android:layout_height="27dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:textSize="13dp"
+        android:clickable="false"
+        android:textColor="@color/text_white"
+        android:background="@drawable/chatroom_invite_item_btn"
+        android:text="@string/chatroom_invite_audience_item_btn"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separate_line_gray"
+        android:layout_toRightOf="@id/iv_avatar"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>
