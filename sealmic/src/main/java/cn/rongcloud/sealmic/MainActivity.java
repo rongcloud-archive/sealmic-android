@@ -56,6 +56,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private EditText editText;
     private SwipeRefreshLayout mRefreshLayout;
     private Handler handler;
+    private View emptyView;
     private volatile boolean isJoiningRoom = false; // 是否正有加入房间操作
     private long lastPressBackKeyMillis; // 最近一次点击后退键的时间
 
@@ -77,8 +78,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void loadData() {
         RoomManager.getInstance().getChatRoomList(new ResultCallback<List<BaseRoomInfo>>() {
 
-            public void onSuccess(List<BaseRoomInfo> baseRoomInfos) {
-                chatRoomRefreshAdapter.setLoadDataList(baseRoomInfos);
+            public void onSuccess(List<BaseRoomInfo> baseRoomInfoList) {
+                if(baseRoomInfoList == null || baseRoomInfoList.size() == 0){
+                    emptyView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                }else {
+                    emptyView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+                chatRoomRefreshAdapter.setLoadDataList(baseRoomInfoList);
                 mRefreshLayout.setRefreshing(false);
             }
 
@@ -134,6 +142,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 loadData();
             }
         });
+
+        // 列表空图标
+        emptyView = findViewById(R.id.rc_seal_mic_empty_view);
     }
 
     @Override

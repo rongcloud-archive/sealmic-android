@@ -6,6 +6,7 @@
     <string name="save">保存</string>
     <string name="room_send_message_hint">说点什么吧&#8230;</string>
     <string name="room_title_format" formatted="true">%1$s(%2$d人)</string>
+    <string name="people_count_format" formatted="true">%d 人</string>
 
     <string name="mic_cmd_pick_mic">抱麦</string>
     <string name="mic_cmd_lock_mic">锁麦</string>
@@ -14,6 +15,8 @@
     <string name="mic_cmd_unforbidden">解禁</string>
     <string name="mic_cmd_kick_off">踢麦</string>
     <string name="mic_cmd_jump_down">下麦</string>
+
+    <string name="me">我</string>
 
     <string name="chatroom_user_enter">进入房间</string>
     <string name="chatroom_user_quit">离开房间</string>

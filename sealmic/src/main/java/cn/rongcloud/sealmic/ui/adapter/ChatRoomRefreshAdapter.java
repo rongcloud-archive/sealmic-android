@@ -51,7 +51,7 @@ public class ChatRoomRefreshAdapter extends RecyclerView.Adapter<ChatRoomRefresh
     @Override
     public void onBindViewHolder(@NonNull ChatRoomRefreshHolder chatRoomRefreshHolder, int i) {
         chatRoomRefreshHolder.imageViewRandom.setImageDrawable(mContext.getResources().getDrawable(mList.get(i).getRoomCoverImageId()));
-        chatRoomRefreshHolder.textViewNumber.setText(String.valueOf(mList.get(i).getMemCount()));
+        chatRoomRefreshHolder.textViewNumber.setText(mContext.getString(R.string.people_count_format, mList.get(i).getMemCount()));
         chatRoomRefreshHolder.textViewSubject.setText(mList.get(i).getSubject());
     }
 

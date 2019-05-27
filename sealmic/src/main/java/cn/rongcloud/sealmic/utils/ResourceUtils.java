@@ -1,6 +1,7 @@
 package cn.rongcloud.sealmic.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,9 +101,9 @@ public class ResourceUtils {
     public String getUserName(String userId) {
         if (userId == null) userId = "";
 
-        int hasCode = userId.hashCode() > 0 ? userId.hashCode() : -userId.hashCode();
+        int asc = getStringLastCharAsc(userId);
         int size = userNickNamePool.size();
-        String nickName = userNickNamePool.get(hasCode % size);
+        String nickName = userNickNamePool.get(asc % size);
         return nickName;
     }
 
@@ -116,9 +117,9 @@ public class ResourceUtils {
     public int getUserAvatarResourceId(String userId) {
         if (userId == null) userId = "";
 
-        int hash = userId.hashCode() > 0 ? userId.hashCode() : -userId.hashCode();
+        int asc = getStringLastCharAsc(userId);
         int size = userAvatarPool.size();
-        int avatar = userAvatarPool.get(hash % size);
+        int avatar = userAvatarPool.get(asc % size);
         return avatar;
     }
 
@@ -126,8 +127,8 @@ public class ResourceUtils {
         if (roomId == null) roomId = "";
 
         int size = roomCoverImagePool.size();
-        int hash = roomId.hashCode() > 0 ? roomId.hashCode() : -roomId.hashCode();
-        return roomCoverImagePool.get(hash % size);
+        int asc = getStringLastCharAsc(roomId);
+        return roomCoverImagePool.get(asc % size);
     }
 
     public int getRoomBackgroundImageId(int bgId) {
@@ -140,5 +141,12 @@ public class ResourceUtils {
         int size = roomTitlePool.size();
         int index = Math.abs(new Random().nextInt());
         return roomTitlePool.get(index % size);
+    }
+
+    private int getStringLastCharAsc(String str){
+        if(TextUtils.isEmpty(str)) return 0;
+        int length = str.length();
+        char c = str.charAt(length - 1);
+        return (int)c;
     }
 }

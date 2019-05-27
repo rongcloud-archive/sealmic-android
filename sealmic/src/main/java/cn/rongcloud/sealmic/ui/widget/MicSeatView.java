@@ -6,12 +6,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import cn.rongcloud.sealmic.R;
 import cn.rongcloud.sealmic.model.MicState;
 import cn.rongcloud.sealmic.model.RoomMicPositionInfo;
+import cn.rongcloud.sealmic.task.AuthManager;
 import cn.rongcloud.sealmic.utils.ResourceUtils;
 
 /**
@@ -20,6 +22,7 @@ import cn.rongcloud.sealmic.utils.ResourceUtils;
 public class MicSeatView extends FrameLayout {
     private ImageView micSeatIv;
     private ImageView micMuteIv;
+    private TextView nameTv;
     private MicSeatRippleView micSeatRippleView;
     private RoomMicPositionInfo micInfo;
     private OnImageClickListener mOnImageClickLitener;
@@ -38,6 +41,7 @@ public class MicSeatView extends FrameLayout {
         View contentView = inflate(this.getContext(), R.layout.chatroom_item_mic_seat, this);
         micSeatIv = contentView.findViewById(R.id.chatroom_item_iv_mic_seat);
         micMuteIv = contentView.findViewById(R.id.chatroom_item_iv_mic_mute);
+        nameTv = contentView.findViewById(R.id.chatroom_item_tv_name);
         micSeatRippleView = contentView.findViewById(R.id.chatroom_item_rp_mic_ripple);
         micSeatIv.setBackground(null);
         micSeatIv.setOnClickListener(new OnClickListener() {
@@ -54,6 +58,8 @@ public class MicSeatView extends FrameLayout {
         this.micInfo = micInfo;
         int state = micInfo.getState();
         String micUserId = micInfo.getUserId();
+        nameTv.setText("");
+        String currentUserId = AuthManager.getInstance().getCurrentUserId();
 
         // 麦位是否为空状态
         if (TextUtils.isEmpty(micUserId) && !MicState.isState(state, MicState.Locked)) {
@@ -65,7 +71,14 @@ public class MicSeatView extends FrameLayout {
 
             // 麦位有用户
         } else if (MicState.isState(state, MicState.Hold)) {
-            setMicSeatAvatar(ResourceUtils.getInstance().getUserAvatarResourceId(micInfo.getUserId()));
+            setMicSeatAvatar(ResourceUtils.getInstance().getUserAvatarResourceId(micUserId));
+            if(currentUserId.equals(micUserId)){
+                nameTv.setText(getResources().getText(R.string.me));
+                nameTv.setTextColor(getResources().getColor(R.color.text_blue));
+            } else {
+                nameTv.setText(ResourceUtils.getInstance().getUserName(micUserId));
+                nameTv.setTextColor(getResources().getColor(R.color.text_white));
+            }
         }
 
         // 麦位是否被禁麦

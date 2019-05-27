@@ -33,4 +33,15 @@
         app:startOffset="32.5dp"
         app:speed="0.5"
         />
+    <TextView
+        android:id="@+id/chatroom_item_tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Isaac Ingersoll"
+        android:textColor="@color/text_white"
+        android:textSize="10dp"
+        android:layout_below="@+id/chatroom_item_iv_mic_seat"
+        android:layout_marginTop="4dp"
+        android:layout_centerHorizontal="true"
+        />
 </RelativeLayout>

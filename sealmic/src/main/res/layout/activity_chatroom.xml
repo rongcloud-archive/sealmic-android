@@ -88,13 +88,13 @@
     <RelativeLayout
         android:id="@+id/chatroom_ll_mic_seat"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="200dp"
         android:layout_below="@id/chatroom_tv_room_manager_nickname"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="95dp"
+            android:layout_height="100dp"
             android:gravity="center"
             android:layout_alignParentTop="true"
             android:clipChildren="false"
@@ -124,7 +124,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="95dp"
+            android:layout_height="100dp"
             android:gravity="center"
             android:layout_alignParentBottom="true"
             >
@@ -165,7 +165,7 @@
         android:dividerHeight="8dp"
         android:listSelector="@android:color/transparent"
         android:overScrollMode="never"
-        android:scrollbarThumbVertical="@null"
+        android:scrollbarThumbVertical="@android:color/transparent"
         tools:listitem="@layout/chatroom_item_chatlist_chat" />
 
     <!-- 底部输入栏 -->

@@ -37,6 +37,8 @@ public class SealMicApp extends MultiDexApplication {
          */
         // 初始化网络请求
         HttpClient.getInstance().init(this);
+        // 初始化后清除掉请求认证缓存，保证每次登录都使用不用的用户
+        HttpClient.getInstance().clearRequestCache();
         // 初始化线程管理
         ThreadManager.getInstance().init(this);
         // 初始化 IM
