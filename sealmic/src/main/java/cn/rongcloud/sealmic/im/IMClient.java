@@ -52,7 +52,7 @@ public class IMClient {
          * 初始化 SDK，在整个应用程序全局，只需要调用一次。建议在 Application 继承类中调用。
          */
         // 可在初始 SDK 时直接带入融云 IM 申请的APP KEY
-        RongIMClient.init(context, "x4vkb1qpxzu4k", false);
+        RongIMClient.init(context, 这里请替换为您的融云 AppKey, false);
 
         try {
             RongIMClient.registerMessageType(MicPositionChangeMessage.class);

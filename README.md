@@ -6,6 +6,24 @@ SealMic 展示了如何通过融云 RTCLib SDK 实现音频社交功能。
 
 * **RTCLib SDK：融云实时音视频 SDK**
 
+## 运行 SealMic-Android
+1.  替换 SealMicUrls.java 中的 DOMAIN 常量值为您所部署的 SealMic 服务地址。  
+```
+public class SealMicUrls {
+    public static final String DOMAIN = 这里请替换为您所部署的 SealMic Server 地址;
+```
+2. 替换 IMClient.java 中，init 方法中调用融云初始化的代码 RongIMClient.init 替换为您所申请的融云 AppKey。  
+```
+    public void init(Context context) {
+        /*
+         * 初始化 SDK，在整个应用程序全局，只需要调用一次。建议在 Application 继承类中调用。
+         */
+        // 可在初始 SDK 时直接带入融云 IM 申请的APP KEY
+        RongIMClient.init(context, 这里请替换为您的融云 AppKey, false);
+```
+备注：
+SealMic Server 源码可以参考[这里](https://github.com/rongcloud/sealmic-server)
+
 ## 主要功能介绍  
 SealMic 主要由两个页面构成：语音聊天室列表页和语音聊天室详情页面。  
 * **语音聊天室列表页** &emsp;  

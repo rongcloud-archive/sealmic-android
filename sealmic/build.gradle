@@ -14,19 +14,9 @@ android {
         multiDexEnabled true
     }
 
-    signingConfigs {
-        config {
-            storeFile file("rong.key")
-            storePassword "Amigo123"
-            keyAlias "RongCloud"
-            keyPassword "Amigo123"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
