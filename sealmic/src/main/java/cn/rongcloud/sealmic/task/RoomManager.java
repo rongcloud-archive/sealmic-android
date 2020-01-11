@@ -974,8 +974,10 @@ public class RoomManager {
         }
 
         @Override
-        public void onRemoteUserUnPublishResource(RongRTCRemoteUser rongRTCRemoteUser, List<RongRTCAVInputStream> list) {
+        public void onRemoteUserUnpublishResource(RongRTCRemoteUser rongRTCRemoteUser, List<RongRTCAVInputStream> list) {
+
         }
+
 
         @Override
         public void onUserJoined(RongRTCRemoteUser rongRTCRemoteUser) {

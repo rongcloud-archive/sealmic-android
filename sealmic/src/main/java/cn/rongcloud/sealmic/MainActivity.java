@@ -1,5 +1,6 @@
 package cn.rongcloud.sealmic;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,11 +40,17 @@ import cn.rongcloud.sealmic.utils.ToastUtils;
 import cn.rongcloud.sealmic.utils.log.SLog;
 import io.rong.imlib.RongIMClient;
 
-import static cn.rongcloud.rtc.core.voiceengine.BuildInfo.MANDATORY_PERMISSIONS;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = "MainActivity";
+    private static final String[] MANDATORY_PERMISSIONS = {
+            "android.permission.MODIFY_AUDIO_SETTINGS",
+            "android.permission.RECORD_AUDIO",
+            "android.permission.INTERNET",
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
     /**
      * 退出应用时两次点击后退键的时间间隔
      */

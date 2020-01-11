@@ -231,7 +231,7 @@ public class RtcClient {
         }
 
         if (receiveVoiceSteamList.size() > 0) {
-            rtcRoom.unSubscribeAVStream(receiveVoiceSteamList, new RongRTCResultUICallBack() {
+            rtcRoom.unsubscribeAVStream(receiveVoiceSteamList, new RongRTCResultUICallBack() {
                 @Override
                 public void onUiSuccess() {
                     if (callBack != null) {
