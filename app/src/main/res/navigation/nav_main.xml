@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navi_main"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.fragment.MainFragment"
+        android:label="main_fragment"
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_mainFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment"
+            app:enterAnim="@anim/navi_animation_enter"
+            app:exitAnim="@anim/navi_animation_exit"
+            app:popEnterAnim="@anim/navi_animation_pop_enter"
+            app:popExitAnim="@anim/navi_animation_pop_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.fragment.ChatRoomFragment"
+        android:label="fragment_chat_room"
+        tools:layout="@layout/fragment_chat_room">
+        <action
+            android:id="@+id/action_chatRoomFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:enterAnim="@anim/navi_animation_enter"
+            app:exitAnim="@anim/navi_animation_exit"
+            app:popEnterAnim="@anim/navi_animation_pop_enter"
+            app:popExitAnim="@anim/navi_animation_pop_exit" />
+    </fragment>
+</navigation>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Sealmic-android</string>
+    <string name="goto_chatRoom_fragment">跳转至聊天室</string>
+</resources>

@@ -1,0 +1,15 @@
+/build
+.DS_Store
+../../RongCloud/rce-android-dev/.gradle/
+../../IdeaProjects/Thread/.idea/
+out/
+gradlew.bat
+.gradle/
+.idea/
+local.properties
+tags
+*.iml
+**/build/
+*.pyc
+push/.externalNativeBuild
+doc/internal/sdk/_book/
