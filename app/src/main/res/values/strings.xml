@@ -1,4 +1,215 @@
 <resources>
-    <string name="app_name">Sealmic-android</string>
+    <string name="app_name">SealMic</string>
+    <string name="app">Seal Mic</string>
     <string name="goto_chatRoom_fragment">跳转至聊天室</string>
+    <string name="goto_login_fragment">跳转至登录页面</string>
+    <string name="login_commit">登录</string>
+    <string name="login_success">登录成功</string>
+    <string name="get_auth_code">验证码</string>
+    <string name="please_input_right_mobile">请输入手机号</string>
+    <string name="input_right_mobile_error">手机号错误</string>
+    <string name="mobile_or_authcode_notnull">手机号或验证码不能为空</string>
+    <string name="please_input_auth_code">请输入验证码</string>
+    <string name="mobile_not_empty">手机号不能为空</string>s
+    <string name="secs">%s\'s</string>
+    <string name="open_new_room">开启新房间</string>
+    <string name="open_new_room_null"></string>
+    <string name="online_number">在线 %s </string>
+    <string name="delay_ms">%s ms</string>
+    <string name="negative">确定</string>
+    <string name="object_name">RCMic:gift</string>
+
+    <string name="room_list">房间列表</string>
+    <string name="please_input_room_name">请输入房间名称</string>
+    <string name="room_nick_name">您在房间内的昵称:</string>
+    <string name="room_pic">房间主题图</string>
+    <string name="room_random_pic">随机图</string>
+    <string name="create_room">好了</string>
+
+    <string name="welcome_join_room">加入了房间</string>
+    <string name="please_login">请先登录</string>
+
+    <string name="room_notice">公告</string>
+    <string name="have_done">知道了</string>
+    <string name="notice_content">这是房间公告 \n\n 请文明聊天，可以聊天，唱歌，送礼。 \n\n 禁止黄赌毒，禁止骂人，禁止一切需要禁止的事情。</string>
+    <string name="tv_take_over_title">%s 想接管主持，是否同意？</string>
+    <string name="tv_hand_over_title">%s 想转让主持，是否同意？</string>
+    <string name="dialog_agree">同意</string>
+    <string name="dialog_refuse">拒绝</string>
+    <string name="kick">踢</string>
+    <string name="ban">禁</string>
+    <string name="connect">连</string>
+    <string name="go_mic">上麦</string>
+    <string name="unlock_mic">解</string>
+    <string name="allow_user_join">允许观众加入</string>
+    <string name="setting">设置</string>
+    <string name="bg_audio">伴音</string>
+    <string name="change_audio">变声</string>
+    <string name="send_gift">赠送</string>
+    <string name="current_mic_lock">当前麦位已锁定</string>
+
+    <string name="hand_over_refuse">对方拒绝了你的转让申请</string>
+    <string name="hand_over_agree">对方同意了你的转让申请</string>
+    <string name="take_over_refuse">对方拒绝了你的接管申请</string>
+    <string name="take_over_agree">对方同意了你的接管申请</string>
+
+    <string name="toast_chatroom_kick_off_from_room">房主将您请出的房间</string>
+    <string name="toast_chatroom_room_manager_exit_room">房主退出了房间</string>
+    <string name="toast_press_back_one_more_to_exit">再按一次退出SealMic</string>
+    <string name="toast_joining_room">正在加入房间</string>
+    <string name="toast_join_room_success">加入房间成功</string>
+    <string name="toast_creating_room">正在创建房间</string>
+    <string name="toast_create_room_success">创建房间成功</string>
+    <string name="toast_room_exist_over_time_limit">房间有效时间已到</string>
+
+    <string name="toast_error_network">网络错误，请稍后再尝试</string>
+    <string name="toast_error_server_request">请求失败，请稍后再尝试</string>
+    <string name="toast_error_im_request">即时通讯出错，请稍后再尝试</string>
+    <string name="toast_error_rtc_request">语音通信出错，请稍后再尝试</string>
+    <string name="toast_error_unkown">发生错误</string>
+    <string name="toast_error_login_failed">连接失败，请下拉刷新进行重试</string>
+    <string name="toast_login_success">服务连接成功</string>
+    <string name="toast_error_im_send_message">发送消息失败，请稍后再尝试</string>
+    <string name="toast_error_not_in_room">获取房间信息失败,请重新加入房间</string>
+    <string name="toast_error_need_app_permission">应用需要语音相关权限</string>
+    <string name="toast_error_none_room_type">请选择话题类型</string>
+    <string name="toast_error_invalid_room_title">"请输入房间名称"</string>
+    <string name="toast_error_mic_position_has_been_hold">此麦位上已有其他人</string>
+    <string name="toast_error_create_room_over_limit">当前房间总数量已超过上限</string>
+    <string name="toast_error_room_member_over_limit">当前房间人数已满</string>
+    <string name="toast_error_leave_room_because_error">连接房间失败，请稍后再尝试</string>
+    <string name="toast_error_user_already_on_other_position">用户已在其他麦位上</string>
+
+    <string name="invite_mic">邀请连麦</string>
+    <string name="lock_mic">锁定</string>
+    <string name="unlock_all_mic">解除锁定</string>
+
+    <string name="create_room_error">房间名称有误！格式:20字符以内（汉字10个）!</string>
+
+    <string name="mic_out">下麦</string>
+
+    <string name="close_mic">闭麦</string>
+    <string name="open_mic">开麦</string>
+    <string name="down_mic">下麦</string>
+    <string name="hand_over_host">转让主持人</string>
+    <string name="go_out_room">移出房间</string>
+    <string name="send_message">发消息</string>
+    <string name="send_gift_item">送礼</string>
+    <string name="mic_apply">申请排麦</string>
+    <string name="take_over_host">接管主持</string>
+    <string name="delete_message">删除此条消息</string>
+
+    <string name="enqueue_mic">排麦</string>
+    <string name="enqueue_mic_item_name_normal">%s号麦</string>
+    <string name="enqueue_mic_item_name_lock">%s号麦(锁定)</string>
+    <string name="position_mic">号麦位</string>
+
+    <string name="nature">自然</string>
+    <string name="train_station">火车站</string>
+    <string name="airport">机场</string>
+    <string name="non">无</string>
+    <string name="non_resource">缺少素材</string>
+
+    <string name="TapToContiueAsVideoCallIsOn">点击此处 返回SealMic</string>
+
+    <string name="send_code_invalid">短信验证码无效</string>
+
+    <string name="host_location">主持人麦位</string>
+    <string name="allowe_audience_join_mic">允许观众自由上麦</string>
+    <string name="allowe_audience_join_room">允许观众加入</string>
+    <string name="remove_this_room"> 移出房间 </string>
+    <string name="remove_this_message">删除此条消息</string>
+    <string name="lock_wheet_speak">禁言</string>
+    <string name="connect_speak">连麦</string>
+    <string name="user_receiver">使用听筒播放</string>
+    <string name="open_debug">开启debug模式</string>
+    <string name="room_is_lock">此房间已加锁，试试其他房间吧。</string>
+    <string name="cant_speak">您已被禁言</string>
+    <string name="room_setting_success">房间设置成功</string>
+    <string name="no_permission_update">您没有权限操作该设置</string>
+    <string name="already_at_miclilst">当前已在排麦列表</string>
+    <string name="already_lock_mic">当前麦位已锁定</string>
+    <string name="invalid_url">无效的下载链接</string>
+    <string name="current_version">当前版本： %s</string>
+    <string name="join_room_success">加入了房间</string>
+    <string-array name="dialog_hostsetting">
+        <item>闭麦</item>
+        <item>下麦</item>
+        <item>转让主持人</item>
+        <item>发消息</item>
+        <item>送礼</item>
+        <item>移出房间</item>
+    </string-array>
+    <string-array name="dialog_hostsetting_no">
+        <item>开麦</item>
+        <item>下麦</item>
+        <item>转让主持人</item>
+        <item>发消息</item>
+        <item>送礼</item>
+        <item>移出房间</item>
+    </string-array>
+    <string-array name="dialog_audience_setting">
+        <item>送礼</item>
+        <item>发消息</item>
+        <!--        <item>排麦</item>-->
+    </string-array>
+    <string-array name="dialog_micmanage">
+        <item>邀请连麦</item>
+        <item>锁定</item>
+    </string-array>
+    <string-array name="dialog_micmanage_unlock">
+        <item>邀请连麦</item>
+        <item>解除锁定</item>
+    </string-array>
+    <string-array name="dialog_mic_enqueue">
+        <item>排麦</item>
+    </string-array>
+    <string-array name="dialog_mic_out">
+        <item>下麦</item>
+    </string-array>
+    <string-array name="dialog_mic_take_over">
+        <item>发消息</item>
+        <item>接管主持</item>
+    </string-array>
+    <string-array name="dialog_mic_take_over_without_message">
+        <item>接管主持</item>
+    </string-array>
+    <string-array name="dialog_room_setting_host">
+        <item>允许观众加入</item>
+        <item>允许观众自由上麦</item>
+        <item>使用听筒播放</item>
+        <item>开启debug模式</item>
+    </string-array>
+    <string-array name="dialog_room_setting_audience">
+        <item>使用听筒播放</item>
+        <item>开启debug模式</item>
+    </string-array>
+    <string-array name="dialog_background_audio">
+        <item>无</item>
+        <!--        <item>声卡</item>-->
+        <item>自然</item>
+        <item>火车站</item>
+        <!--        <item>商场</item>-->
+        <item>机场</item>
+    </string-array>
+    <string-array name="dialog_change_audio">
+        <item>原声</item>
+        <item>女声</item>
+        <item>男声</item>
+        <item>中性</item>
+        <item>机器人</item>
+        <item>娃娃音</item>
+    </string-array>
+    <string-array name="dialog_click_message">
+        <item>连麦</item>
+        <item>发消息</item>
+        <item>禁言</item>
+        <item>移出房间</item>
+        <item>删除此条消息</item>
+    </string-array>
+
+    <string-array name="dialog_click_message_del">
+        <item>删除此条消息</item>
+    </string-array>
+
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="actionbar_height">48.4dp</dimen>
+    <dimen name="dimen_17">17sp</dimen>
+
+    <dimen name="dimen_99">99dp</dimen>
+    <dimen name="dimen_87">87dp</dimen>
+    <dimen name="dimen_79">79dp</dimen>
+    <dimen name="dimen_3">3dp</dimen>
+    <dimen name="dimen_1">1dp</dimen>
+
+</resources>

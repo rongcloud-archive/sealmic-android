@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <cn.rongcloud.sealmicandroid.ui.widget.CustomRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp">
+
+
+        <cn.rongcloud.sealmicandroid.ui.widget.CustomImageView
+            android:id="@+id/chatroomlist_iv_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="MissingConstraints" />
+
+        <cn.rongcloud.sealmicandroid.ui.widget.CustomImageView
+            android:id="@+id/chatroomlist_iv_pre"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart" />
+
+        <TextView
+            android:id="@+id/chatroomlist_tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:text="@{item.roomName}"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/chatroom_img_lock"
+            android:layout_width="16dp"
+            android:layout_height="16.5dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@id/chatroomlist_tv_name"
+            android:src="@mipmap/lock" />
+
+        <ImageView
+            android:id="@+id/chatroomlist_img_hot"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="43dp"
+            android:src="@mipmap/ic_chatroom_hot"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@id/chatroomlist_tv_name"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/chatroomlist_tv_hotnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="29dp"
+            android:layout_marginTop="41dp"
+            android:text="100"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="11sp"
+            android:visibility="visible" />
+
+    </cn.rongcloud.sealmicandroid.ui.widget.CustomRelativeLayout>
+
+    <data>
+
+        <variable
+            name="item"
+            type="cn.rongcloud.sealmicandroid.bean.repo.RoomListRepo.RoomsBean" />
+
+        <variable
+            name="chatRoomViewModel"
+            type="cn.rongcloud.sealmicandroid.ui.room.ChatRoomViewModel" />
+
+    </data>
+</layout>

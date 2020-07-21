@@ -1,2 +1,21 @@
-rootProject.name='Sealmic-android'
-include ':app'
+rootProject.name = 'Sealmic-android'
+include ':app', ':IMKit_Source'
+
+def printGradleInfoInRoot() {
+    println "Rong_key:" + Rong_key
+    println "App_name:" + App_name
+    println "Branch:" + Branch
+    println "App_server:" + App_server
+    println "Build_types:" + Build_types
+    println "Img_address:" + Img_address
+    println "ApplicationId:" + ApplicationId
+    println "TargetSdkVersion:" + TargetSdkVersion
+    println "VersionCode:" + currentTime()
+    println "Version_name:" + Version_name
+}
+
+static def currentTime() {
+    return System.currentTimeMillis() / 10000
+}
+
+printGradleInfoInRoot()

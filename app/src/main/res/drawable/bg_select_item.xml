@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--实现应用背景颜色渐变-->
+    <solid android:color="#66CDCDCD" />
+    <!--圆角半径-->
+    <corners android:radius="6dp" />
+</shape>

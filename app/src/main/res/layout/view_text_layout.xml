@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/mic_item_name_bg"
+    android:paddingLeft="8dp"
+    android:paddingTop="1.5dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="1.5dp">
+
+    <RelativeLayout
+        android:id="@+id/chatroom_item_rel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/chatroom_item_text_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/chatroom_mic_name_grey" />
+
+        <TextView
+            android:id="@+id/chatroom_item_text_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="1"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/chatroom_item_text_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@id/chatroom_item_rel"
+        android:text="@string/position_mic"
+        android:textColor="@color/color_cfcfcf"
+        android:textSize="12sp" />
+
+</RelativeLayout>

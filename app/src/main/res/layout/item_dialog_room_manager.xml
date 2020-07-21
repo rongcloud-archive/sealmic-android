@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="64.5dp">
+
+        <ImageView
+            android:id="@+id/img_online_head"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_online_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:textColor="@android:color/white"
+            android:textSize="17dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_online_head"
+            app:layout_constraintStart_toEndOf="@+id/img_online_head"
+            app:layout_constraintTop_toTopOf="@+id/img_online_head"
+            tools:text="HI-1" />
+
+        <TextView
+            android:id="@+id/tv_connect"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/bg_room_member_button"
+            android:gravity="center"
+            android:text="@string/connect"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_online_head"
+            app:layout_constraintEnd_toStartOf="@+id/tv_ban"
+            app:layout_constraintTop_toTopOf="@+id/img_online_head" />
+
+        <TextView
+            android:id="@+id/tv_ban"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/bg_room_member_button"
+            android:gravity="center"
+            android:text="@string/ban"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_online_head"
+            app:layout_constraintEnd_toStartOf="@+id/tv_kick"
+            app:layout_constraintTop_toTopOf="@+id/img_online_head" />
+
+        <TextView
+            android:id="@+id/tv_kick"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="23dp"
+            android:layout_marginRight="23dp"
+            android:background="@mipmap/bg_room_member_button"
+            android:gravity="center"
+            android:text="@string/kick"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_online_head"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_online_head" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="8dp"
+            android:background="#1AFFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/img_online_head"
+            app:layout_constraintTop_toBottomOf="@+id/img_online_head" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+    </data>
+
+</layout>

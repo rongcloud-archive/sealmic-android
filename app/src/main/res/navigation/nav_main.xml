@@ -2,33 +2,79 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navi_main"
-    app:startDestination="@id/mainFragment">
+    android:id="@+id/nav_main"
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="cn.rongcloud.sealmicandroid.ui.fragment.MainFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.main.MainFragment"
         android:label="main_fragment"
         tools:layout="@layout/main_fragment">
         <action
             android:id="@+id/action_mainFragment_to_chatRoomFragment"
             app:destination="@id/chatRoomFragment"
-            app:enterAnim="@anim/navi_animation_enter"
-            app:exitAnim="@anim/navi_animation_exit"
-            app:popEnterAnim="@anim/navi_animation_pop_enter"
-            app:popExitAnim="@anim/navi_animation_pop_exit" />
+            app:enterAnim="@anim/nav_animation_enter"
+            app:exitAnim="@anim/nav_animation_exit"
+            app:popEnterAnim="@anim/nav_animation_pop_enter"
+            app:popExitAnim="@anim/nav_animation_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/nav_animation_enter"
+            app:exitAnim="@anim/nav_animation_exit"
+            app:popEnterAnim="@anim/nav_animation_pop_enter"
+            app:popExitAnim="@anim/nav_animation_pop_exit" />
+        <action
+            android:id="@+id/action_mainFragment_to_createRoomFragment"
+            app:destination="@id/createRoomFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatRoomFragment"
-        android:name="cn.rongcloud.sealmicandroid.ui.fragment.ChatRoomFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.room.ChatRoomFragment"
         android:label="fragment_chat_room"
         tools:layout="@layout/fragment_chat_room">
         <action
             android:id="@+id/action_chatRoomFragment_to_mainFragment"
             app:destination="@id/mainFragment"
-            app:enterAnim="@anim/navi_animation_enter"
-            app:exitAnim="@anim/navi_animation_exit"
-            app:popEnterAnim="@anim/navi_animation_pop_enter"
-            app:popExitAnim="@anim/navi_animation_pop_exit" />
+            app:enterAnim="@anim/nav_animation_enter"
+            app:exitAnim="@anim/nav_animation_exit"
+            app:popEnterAnim="@anim/nav_animation_pop_enter"
+            app:popExitAnim="@anim/nav_animation_pop_exit" />
+        <action
+            android:id="@+id/action_chatRoomFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createRoomFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.room.CreateRoomFragment"
+        android:label="CreateRoomFragment"
+        tools:layout="@layout/fragment_create_room">
+        <action
+            android:id="@+id/action_createRoomFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_createRoomFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.splash.SplashFragment"
+        android:label="SplashFragment">
+        <action
+            android:id="@+id/action_splashFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:enterAnim="@anim/nav_animation_enter"
+            app:exitAnim="@anim/nav_animation_exit"
+            app:popEnterAnim="@anim/nav_animation_pop_enter"
+            app:popExitAnim="@anim/nav_animation_pop_exit" />
     </fragment>
 </navigation>

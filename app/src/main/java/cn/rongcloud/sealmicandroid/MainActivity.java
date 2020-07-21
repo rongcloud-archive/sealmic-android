@@ -5,9 +5,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import cn.rongcloud.sealmicandroid.common.lifecycle.MainObserver;
 import cn.rongcloud.sealmicandroid.databinding.MainActivityBinding;
-import cn.rongcloud.sealmicandroid.lifecycle.MainObserver;
 
+/**
+ * 项目界面总容器
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/debug_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blink_transparent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="20dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="网络探测"
+                android:textColor="@color/blink_text_white"
+                android:textSize="15dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/blink_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text="通道名称"
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text="码率(kbps)"
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text="往返延时(ms)"
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/blink_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text="发送"
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:id="@+id/debug_info_bitrate_send"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text=""
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:id="@+id/debug_info_rtt_send"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text=" "
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/blink_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:id="@+id/debug_info_uid"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text="接收"
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:id="@+id/debug_info_bitrate_rcv"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text=""
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+
+                <TextView
+                    android:id="@+id/debug_info_rtt_rcv"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="5dip"
+                    android:paddingTop="5dip"
+                    android:text="--"
+                    android:textColor="@color/blink_text_white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="0.5dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/blink_divider" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/blink_divider" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="与会者"
+            android:textColor="@color/blink_text_white"
+            android:textSize="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/blink_divider" />
+
+        <include
+            android:id="@+id/table_title"
+            layout="@layout/debug_info_list_item" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:background="@color/blink_divider" />
+
+        <ListView
+            android:id="@+id/debug_info_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/blink_divider"
+            android:dividerHeight="0.5dp"
+            android:fadingEdge="none"
+            android:footerDividersEnabled="true"
+            android:scrollbars="none" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:background="@color/blink_divider" />
+    </LinearLayout>
+</layout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!--
+    size:24px color:#ffffff
+    1、会话页面时间 字体
+    2、InformationNotificationMessage 字体
+    3、DiscussionNotificationMessage 字体
+    -->
+
+    <!--
+    size:32px color:#353535
+    1、TextMessage 字体
+    2、RichContentMessage 标题字体
+    3、会话列表 title
+    -->
+    <!--
+    size:24px color:#838383
+    消息的用户名
+    -->
+    <!--
+    size:28px color:#999999
+    1、RichContentMessage content 字体
+    2、会话列表 item message 字体
+    3、异常弹出条 字体
+    -->
+
+    <!--ReferenceMessage 文本 style-->
+
+</resources>

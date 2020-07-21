@@ -1,19 +1,368 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragment.ChatRoomFragment" >
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="聊天室"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/bg_chat_room">
+
+        <RelativeLayout
+            android:id="@+id/chatroom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{()->click.hide()}"
+            tools:context=".ui.room.ChatRoomFragment">
+
+            <cn.rongcloud.sealmicandroid.ui.widget.ChatRoomTopBar
+                android:id="@+id/chat_room_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_alignParentTop="true" />
+
+            <RelativeLayout
+                android:id="@+id/host_mic_layout"
+                android:layout_below="@+id/chat_room_top_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_room_manager"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="7dp"
+                    android:onClick="@{()->click.micManager()}"
+                    app:isMainMic="true" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_room_manager_tv"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="110dp"
+                    app:position="主" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="11dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/chatroom_broadcast_giftmessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginRight="-200dp"
+                        android:background="@drawable/bg_broadcast_tv"
+                        android:drawableLeft="@mipmap/chatroom_horn"
+                        android:drawablePadding="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        tools:text="设备名称" />
+                </FrameLayout>
+
+            </RelativeLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/chatroom_miclist"
+                android:layout_below="@+id/host_mic_layout"
+                android:layout_width="match_parent"
+                android:layout_height="225dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical"
+                android:paddingTop="10dp">
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_1"
+                    style="@style/MicViewStyle"
+                    android:onClick="@{()->click.mic1()}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_2"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_2"
+                    style="@style/MicViewStyle"
+                    android:gravity="center"
+                    android:onClick="@{()->click.mic2()}"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_1"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_3"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_3"
+                    style="@style/MicViewStyle"
+                    android:onClick="@{()->click.mic3()}"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_2"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_4"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_4"
+                    style="@style/MicViewStyle"
+                    android:gravity="right"
+                    android:onClick="@{()->click.mic4()}"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_5"
+                    style="@style/MicViewStyle"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{()->click.mic5()}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_2"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_micname_1"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_6"
+                    style="@style/MicViewStyle"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{()->click.mic6()}"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_1"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_micname_2"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_7"
+                    style="@style/MicViewStyle"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{()->click.mic7()}"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_2"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_4"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_micname_3"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar
+                    android:id="@+id/chatroom_mp_mic_8"
+                    style="@style/MicViewStyle"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{()->click.mic8()}"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_micname_4"
+                    tools:ignore="MissingConstraints" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_1"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_2"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_1"
+                    app:position="1" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_2"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_1"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_2"
+                    app:position="2" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_3"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_2"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_4"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_3"
+                    app:position="3" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_4"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_4"
+                    app:position="4" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_5"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_6"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_5"
+                    app:position="5" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_6"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_1"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_6"
+                    app:position="6" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_7"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_2"
+                    app:layout_constraintRight_toLeftOf="@id/chatroom_mp_mic_4"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_7"
+                    app:position="7" />
+
+                <cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout
+                    android:id="@+id/chatroom_micname_8"
+                    style="@style/MicTextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0.5dp"
+                    app:layout_constraintLeft_toRightOf="@id/chatroom_mp_mic_3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/chatroom_mp_mic_8"
+                    app:position="8" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 聊天列表 -->
+            <RelativeLayout
+                android:layout_below="@+id/chatroom_miclist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/chatroom_list_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="56dp"
+                    android:divider="@null"
+                    android:dividerHeight="10dp"
+                    android:listSelector="@android:color/transparent"
+                    android:overScrollMode="never"
+                    android:scrollbarThumbVertical="@android:color/transparent"
+                    tools:listitem="@layout/item_chatlist_chat" />
+
+                <RelativeLayout
+                    android:id="@+id/chatroom_function"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="0dp"
+                    tools:ignore="MissingConstraints">
+
+                    <ImageView
+                        android:id="@+id/chatroom_message"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:onClick="@{()->click.popupEditText()}"
+                        android:src="@mipmap/ic_chatroom_message"
+                        tools:ignore="MissingConstraints" />
+
+                    <!--        麦克风        -->
+                    <ImageView
+                        android:id="@+id/chatroom_voice_in"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@id/chatroom_voice_out"
+                        android:src="@drawable/button_chat_room_mic"
+                        tools:ignore="MissingConstraints" />
+
+                    <!--        公放        -->
+                    <ImageView
+                        android:id="@+id/chatroom_voice_out"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@id/chatroom_mute"
+                        android:src="@drawable/button_chat_room_voice"
+                        tools:ignore="MissingConstraints" />
+
+                    <ImageView
+                        android:id="@+id/chatroom_mute"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@id/chatroom_voice"
+                        android:onClick="@{()->click.showChangeAudioDialog()}"
+                        android:src="@mipmap/ic_chatroom_change_voice"
+                        android:visibility="gone"
+                        tools:ignore="MissingConstraints" />
+
+                    <ImageView
+                        android:id="@+id/chatroom_voice"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@id/chatroom_gift"
+                        android:onClick="@{()->click.showBgAudioDialog()}"
+                        android:src="@mipmap/ic_chatroom_bgm"
+                        tools:ignore="MissingConstraints" />
+
+                    <ImageView
+                        android:id="@+id/chatroom_gift"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:onClick="@{()->click.showGiftDialog()}"
+                        android:src="@mipmap/ic_chatroom_gift"
+                        app:layout_constraintLeft_toRightOf="@id/chatroom_voice"
+                        app:layout_constraintRight_toRightOf="parent"
+                        tools:ignore="MissingConstraints" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <io.rong.imkit.RongExtension
+            android:id="@+id/rc_extension"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            app:RCStyle="C"
+            tools:ignore="MissingConstraints" />
+
+        <include
+            android:id="@+id/debug_layout"
+            layout="@layout/debug_info_layout" />
+
+    </RelativeLayout>
+
+    <data>
+
+        <variable
+            name="chatRoomViewModel"
+            type="cn.rongcloud.sealmicandroid.ui.room.ChatRoomViewModel" />
+
+        <variable
+            name="click"
+            type="cn.rongcloud.sealmicandroid.ui.room.ChatRoomFragment.ClickProxy" />
+
+    </data>
+</layout>

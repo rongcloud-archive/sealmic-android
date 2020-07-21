@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content">-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="80dp"
+            android:layout_height="95dp"
+            android:background="@drawable/bg_gift_sel"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_gift"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/iv_giftName"
+            android:layout_width="80dp"
+            android:layout_height="15dp"
+            android:layout_below="@id/iv_gift"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textColor="#DFDFDF"
+            android:textSize="11sp" />
+
+
+    </RelativeLayout>
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <data></data>
+</layout>

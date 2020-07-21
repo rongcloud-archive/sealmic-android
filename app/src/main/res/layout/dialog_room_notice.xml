@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00FFFFFF"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="284dp"
+        android:layout_height="312.5dp"
+        android:background="@mipmap/room_alert_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_notice_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="@string/room_notice"
+            android:textColor="@color/color_2df3c1"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/tv_notice_content"
+            android:layout_width="252.5dp"
+            android:layout_height="185.5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15.5dp"
+            android:background="@drawable/bg_dialog_content"
+            android:paddingStart="10dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="16dp"
+            android:text="@string/notice_content"
+            android:textColor="@color/color_333333"
+            android:textSize="13dp" />
+
+        <TextView
+            android:id="@+id/tv_have_done"
+            android:layout_width="70dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/bg_dialog_button"
+            android:gravity="center"
+            android:text="@string/have_done"
+            android:textColor="@android:color/white"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -19,3 +19,22 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepattributes Exceptions,InnerClasses
+
+-keepattributes Signature
+#RongRTCLib
+-keep public class cn.rongcloud.** {*;}
+
+#RongIMLib
+-keep class io.rong.** {*;}
+-keep class cn.rongcloud.** {*;}
+-keep class * implements io.rong.imlib.model.MessageContent {*;}
+-dontwarn io.rong.push.**
+-dontnote com.xiaomi.**
+-dontnote com.google.android.gms.gcm.**
+-dontnote io.rong.**
+
+-ignorewarnings
+
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

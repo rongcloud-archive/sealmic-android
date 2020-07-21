@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CustomTitleBar">
+        <attr name="leftTitle" format="string" />
+        <attr name="middleTitle" format="string" />
+        <attr name="rightTitle" format="string" />
+
+        <attr name="leftTextSize" format="dimension" />
+        <attr name="middleTextSize" format="dimension" />
+        <attr name="rightTextSize" format="dimension" />
+
+        <attr name="leftTextColor" format="color" />
+        <attr name="middleTextColor" format="color" />
+        <attr name="rightTextColor" format="color" />
+
+        <attr name="leftImage" format="integer" />
+        <attr name="rightImage" format="integer" />
+        <attr name="rightImage2" format="integer" />
+
+    </declare-styleable>
+
+    <declare-styleable name="CustomDynamicAvatarMic">
+        <attr name="isMainMic" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SwitchButton">
+        <attr name="kswThumbDrawable" format="reference" />
+        <attr name="kswThumbColor" format="color|reference" />
+        <attr name="kswThumbMargin" format="dimension|reference" />
+        <attr name="kswThumbMarginTop" format="dimension|reference" />
+        <attr name="kswThumbMarginBottom" format="dimension|reference" />
+        <attr name="kswThumbMarginLeft" format="dimension|reference" />
+        <attr name="kswThumbMarginRight" format="dimension|reference" />
+        <attr name="kswThumbWidth" format="dimension|reference" />
+        <attr name="kswThumbHeight" format="dimension|reference" />
+        <attr name="kswThumbRadius" format="dimension|reference" />
+        <attr name="kswBackRadius" format="dimension|reference" />
+        <attr name="kswBackDrawable" format="reference" />
+        <attr name="kswBackColor" format="color|reference" />
+        <attr name="kswFadeBack" format="boolean" />
+        <attr name="kswBackMeasureRatio" format="float" />
+        <attr name="kswAnimationDuration" format="integer" />
+        <attr name="kswTintColor" format="color|reference" />
+        <attr name="kswTextOn" format="string" />
+        <attr name="kswTextOff" format="string" />
+        <attr name="kswTextMarginH" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="swb_list_item">
+        <attr name="swb_list_item_title" format="reference" />
+        <attr name="swb_list_item_button_drawable" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="mic_position">
+        <attr name="position" format="string" />
+        <attr name="backgroudcolor" format="integer" />
+    </declare-styleable>
+
+</resources>

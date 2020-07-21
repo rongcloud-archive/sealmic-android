@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_uid"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="用户ID"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_media_type"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="通道名称"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_codec"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="Codec"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_resolution"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="分辨率"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_fps"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="帧率(fps)"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_bitrate"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="码率(kbps)"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+
+    <TextView
+        android:id="@+id/debug_info_lost_rate"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="5dip"
+        android:paddingTop="5dip"
+        android:text="丢包率%"
+        android:textColor="@color/blink_text_white"
+        android:textSize="11sp" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="fill_parent"
+        android:background="@color/blink_divider" />
+</LinearLayout>

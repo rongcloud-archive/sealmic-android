@@ -3,4 +3,44 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="color_b2b2b2">#B2B2B2</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_000000">#000000</color>
+    <color name="color_2df3c1">#2df3c1</color>
+    <color name="color_8b879a">#8b879a</color>
+    <color name="color_afafaf">#afafaf</color>
+    <color name="color_262626t">#262626</color>
+    <color name="color_dfdfdf">#DFDFDD</color>
+    <color name="color_cdcdcd">#cdcdcd</color>
+    <color name="blink_black">#000000</color>
+    <color name="blink_transparent">#a0000000</color>
+    <color name="blink_green">#006400</color>
+    <color name="blink_grey">#CFCFCE</color>
+    <color name="blink_text_grey">#333333</color>
+    <color name="blink_launcher_grey">#666666</color>
+    <color name="blink_text_green">#33CCFF</color>
+    <color name="blink_text_green1">#008B00</color>
+    <color name="blink_blue">#3A83F5</color>
+    <color name="blink_blue2">#1C86EE</color>
+    <color name="blink_grey1">#8C8C8C</color>
+    <color name="blink_orange">#FFA07A</color>
+    <color name="blink_orange1">#FF6347</color>
+    <color name="blink_yellow">#EEC900</color>
+    <color name="blink_yellow1">#EEE685</color>
+    <color name="dialog_bg_color">#00ffffff</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="blink_divider">#AAAAAA</color>
+    <color name="blink_text_white">#FFFFFF</color>
+    <color name="blink_rad">#ffff0000</color>
+    <color name="color_cfcfcf">#CFCFCF</color>
+    <color name="color_7b8fa5">#7b8fa5</color>
+    <color name="white">#fff</color>
+
+    <color name="color_e4e4e7">#e4e4e7</color>
+
+    <color name="color_8A000000">#8A000000</color>
+
+
 </resources>

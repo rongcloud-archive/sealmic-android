@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/create_room_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        tools:context=".ui.room.CreateRoomFragment">
+
+        <cn.rongcloud.sealmicandroid.ui.widget.CustomTitleBar
+            android:id="@+id/create_room_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:leftTitle="@string/open_new_room"
+            app:middleTextColor="@color/blink_black"
+            app:middleTextSize="19dp"
+            app:middleTitle="@string/app"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/create_room_theme"
+            android:layout_width="126dp"
+            android:layout_height="126dp"
+            android:layout_below="@id/create_room_title"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/create_room_title"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/create_room_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/create_room_theme"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="@string/room_pic"
+            android:textColor="@color/color_000000"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/create_room_theme" />
+
+        <TextView
+            android:id="@+id/create_room_button"
+            android:layout_width="322dp"
+            android:layout_height="49dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/bg_login_button"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:onClick="@{(v)->createRoom.createRoom(v,createRoom.roomName)}"
+            android:text="@string/create_room"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <EditText
+            android:id="@+id/room_name_edit"
+            android:layout_width="322dp"
+            android:layout_height="44dp"
+            android:layout_below="@id/create_room_name"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_mobile_edit_text"
+            android:ems="10"
+            android:hint="@string/please_input_room_name"
+            android:inputType="textPersonName"
+            android:paddingStart="24dp"
+            android:maxLength="20"
+            android:paddingLeft="24dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@{createRoom.roomName}"
+            android:textSize="14dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/create_room_name"
+            tools:ignore="RtlSymmetry" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="createRoom"
+            type="cn.rongcloud.sealmicandroid.ui.room.CreateRoomViewModel" />
+    </data>
+</layout>
