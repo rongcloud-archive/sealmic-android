@@ -17,10 +17,13 @@ import androidx.work.WorkManager;
 
 import com.tencent.bugly.crashreport.CrashReport;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Iterator;
 import java.util.List;
 
 import cn.rongcloud.rtc.api.RCRTCEngine;
+import cn.rongcloud.sealmicandroid.common.Event;
 import cn.rongcloud.sealmicandroid.common.service.RTCNotificationService;
 import cn.rongcloud.sealmicandroid.common.worker.RongWorker;
 import cn.rongcloud.sealmicandroid.im.IMClient;
@@ -218,6 +221,10 @@ public class SealMicApp extends MultiDexApplication {
             @Override
             public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
                 SLog.e(SLog.TAG_SEAL_MIC, "IM连接失败，错误码为: " + connectionErrorCode.getValue());
+                if (connectionErrorCode.equals(RongIMClient.ConnectionErrorCode.RC_CONN_TOKEN_INCORRECT)) {
+                    //从 获取新 token，并重连,发送Event
+                    EventBus.getDefault().postSticky(new Event.UserTokenLose());
+                }
             }
 
             @Override

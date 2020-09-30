@@ -3,6 +3,7 @@ package cn.rongcloud.sealmicandroid.model;
 import java.util.List;
 
 import cn.rongcloud.sealmicandroid.bean.repo.NetResult;
+import cn.rongcloud.sealmicandroid.bean.repo.RefreshTokenRepo;
 import cn.rongcloud.sealmicandroid.bean.repo.RoomMemberRepo;
 import cn.rongcloud.sealmicandroid.bean.repo.UserLoginRepo;
 import cn.rongcloud.sealmicandroid.bean.repo.VisitorLoginRepo;
@@ -30,6 +31,10 @@ public class UserModel {
 
     public NetStateLiveData<NetResult<Void>> sendCode(String mobile) {
         return userService.sendCode(new SendCodeReq(mobile));
+    }
+
+    public NetStateLiveData<RefreshTokenRepo> refreshToken() {
+        return userService.refreshToken();
     }
 
     public NetStateLiveData<VisitorLoginRepo> visitorLogin() {

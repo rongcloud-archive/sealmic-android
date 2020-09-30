@@ -96,6 +96,8 @@ public class IMClient {
      * @return 是否处理消息。 如果 App 处理了此消息，返回 true; 否则返回 false 由 SDK 处理。
      */
     public void init(Context context) {
+        //设置导航地址
+        RongIMClient.setServerInfo(BuildConfig.Navi_server, "");
         /*
          * 初始化 SDK，在整个应用程序全局，只需要调用一次。建议在 Application 继承类中调用。
          */
@@ -165,6 +167,42 @@ public class IMClient {
                     //3. 调用游客登录接口重新登录
                     EventBus.getDefault().post(new Event.UserGoOutBean());
                 }
+            }
+        });
+
+        //IM聊天室KV监听
+        RongIMClient.getInstance().setKVStatusListener(new RongIMClient.KVStatusListener() {
+
+            /**
+             * 加入聊天室成功后，SDK 默认从服务端同步 KV 列表，同步完成后触发
+             *
+             * @param roomId 聊天室 Id
+             */
+            @Override
+            public void onChatRoomKVSync(String roomId) {
+
+            }
+
+            /**
+             * 更新时全量返回 KV 属性，更新包含新增、修改
+             *
+             * @param roomId        聊天室 Id
+             * @param chatRoomKvMap 发生变化的 KV
+             */
+            @Override
+            public void onChatRoomKVUpdate(String roomId, Map<String, String> chatRoomKvMap) {
+
+            }
+
+            /**
+             * KV 被删除时触发
+             *
+             * @param roomId        聊天室 Id
+             * @param chatRoomKvMap 被删除的 KV
+             */
+            @Override
+            public void onChatRoomKVRemove(String roomId, Map<String, String> chatRoomKvMap) {
+
             }
         });
     }

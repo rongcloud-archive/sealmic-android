@@ -406,5 +406,12 @@ public class Event {
         }
     }
 
+    /**
+     * 用户token失效后的事件通知
+     */
+    public static class UserTokenLose {
+
+    }
+
 }
 

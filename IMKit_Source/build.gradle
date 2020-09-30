@@ -1,13 +1,17 @@
 apply plugin: 'com.android.library'
 
+static def currentTime() {
+    return System.currentTimeMillis() / 10000
+}
+
 android {
-    compileSdkVersion 26
+    compileSdkVersion CompileSdkVersion as int
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 23
-        versionCode 2020050816
-        versionName "2.10.6_release"
+        targetSdkVersion TargetSdkVersion as int
+        versionCode currentTime() as int
+        versionName Version_name
     }
     buildTypes {
         release {
@@ -33,7 +37,7 @@ android {
 dependencies {
     api fileTree(dir: 'src/main/libs', include: ['*.jar'])
     api 'com.android.support:support-v4:26.1.0'
-    api 'cn.rongcloud.sdk:im_lib:4.0.0.3'
+    api 'cn.rongcloud.sdk:im_lib:4.0.3.1'
     api 'com.github.bumptech.glide:glide:4.9.0'
 }
 

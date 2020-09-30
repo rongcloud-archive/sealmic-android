@@ -5,6 +5,7 @@ import android.widget.Toast;
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.SealMicApp;
 import cn.rongcloud.sealmicandroid.common.constant.ErrorCode;
+import cn.rongcloud.sealmicandroid.manager.ThreadManager;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 
 /**
@@ -76,12 +77,18 @@ public class ToastUtil {
         showToast(SealMicApp.getApplication().getResources().getString(resourceId));
     }
 
-    public static void showToast(String message) {
-        if (lastToast != null && lastToast.getView() != null && lastToast.getView().getParent() != null) {
-            lastToast.setText(message);
-        } else {
-            lastToast = Toast.makeText(SealMicApp.getApplication(), message, Toast.LENGTH_SHORT);
-        }
-        lastToast.show();
+    public static void showToast(final String message) {
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (lastToast != null && lastToast.getView() != null && lastToast.getView().getParent() != null) {
+                    lastToast.setText(message);
+                } else {
+                    lastToast = Toast.makeText(SealMicApp.getApplication(), message, Toast.LENGTH_SHORT);
+                }
+                lastToast.show();
+            }
+        });
+
     }
 }

@@ -71,9 +71,6 @@ public class RoomSettingDialogFactory extends BottomDialogFactory {
         // 宽度
         lp.width = context.getResources().getDisplayMetrics().widthPixels;
         root.measure(0, 0);
-//        lp.height = root.getMeasuredHeight() * hosteling.length + headView.getMeasuredHeight();
-        // 透明度
-        lp.alpha = 9f;
         micSettingWindow.setAttributes(lp);
         root.addHeaderView(headView);
         TextView dialogTitleText = headView.findViewById(R.id.dialog_name);

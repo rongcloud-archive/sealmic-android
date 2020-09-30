@@ -12,8 +12,8 @@
         <cn.rongcloud.sealmicandroid.ui.widget.CustomImageView
             android:id="@+id/chatroomlist_iv_picture"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="MissingConstraints" />
+            android:contentDescription="@string/create_room_content"
+            android:layout_height="match_parent" />
 
         <cn.rongcloud.sealmicandroid.ui.widget.CustomImageView
             android:id="@+id/chatroomlist_iv_pre"

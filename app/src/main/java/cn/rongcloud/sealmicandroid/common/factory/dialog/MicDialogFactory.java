@@ -83,9 +83,6 @@ public class MicDialogFactory extends BottomDialogFactory {
         // 宽度
         lp.width = context.getResources().getDisplayMetrics().widthPixels;
         root.measure(0, 0);
-//        lp.height = root.getMeasuredHeight() * hosteling.length + headView.getMeasuredHeight();
-        // 透明度
-        lp.alpha = 9f;
         dialogWindow.setAttributes(lp);
         root.addHeaderView(headView);
 
@@ -109,6 +106,9 @@ public class MicDialogFactory extends BottomDialogFactory {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventLockState(Event.EventLockMic eventLockMic) {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            return;
+        }
         if (eventLockMic.getState() == MicState.NORMAL.getState()) {
             String[] hosteling = SealMicApp.getApplication().getResources().getStringArray(R.array.dialog_hostsetting);
             dialogAdapter.setDatas(hosteling);

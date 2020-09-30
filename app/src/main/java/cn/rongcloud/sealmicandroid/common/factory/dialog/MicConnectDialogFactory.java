@@ -72,9 +72,6 @@ public class MicConnectDialogFactory extends BottomDialogFactory {
         // 宽度
         lp.width = context.getResources().getDisplayMetrics().widthPixels;
         root.measure(0, 0);
-//        lp.height = root.getMeasuredHeight() * hosteling.length + headView.getMeasuredHeight();
-        // 透明度
-        lp.alpha = 9f;
         dialogWindow.setAttributes(lp);
         root.addHeaderView(headView);
 

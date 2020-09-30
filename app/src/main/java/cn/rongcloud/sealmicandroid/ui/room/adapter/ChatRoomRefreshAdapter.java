@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.rongcloud.sealmicandroid.R;
-import cn.rongcloud.sealmicandroid.SealMicApp;
 import cn.rongcloud.sealmicandroid.bean.repo.RoomListRepo;
 import cn.rongcloud.sealmicandroid.common.listener.RoomListItemOnClickListener;
 import cn.rongcloud.sealmicandroid.databinding.ItemMainChatRoomBinding;

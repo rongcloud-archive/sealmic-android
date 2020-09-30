@@ -61,7 +61,7 @@ public class RoomManager {
         //退出IM
         IMClient.getInstance().quitChatRoom(roomId, imCallBack);
         //退出RTC
-        RTCClient.getInstance().micQuitRoom(roomId);
+        RTCClient.getInstance().micQuitRoom(roomId, null);
         //回收RTC
         RTCClient.getInstance().unInit();
     }
@@ -124,6 +124,7 @@ public class RoomManager {
                     }
                 }, SealMicConstant.DELAY_KV);
             }
+
 
             @Override
             public void onError(RongIMClient.ErrorCode errorCode) {
@@ -210,25 +211,35 @@ public class RoomManager {
      */
     public void micGoDown(final String roomId, final SealMicResultCallback<Map<String, String>> callback) {
         //调用 RongRTCEngine#quitRoom 接口来退出直播。
-        RTCClient.getInstance().micQuitRoom(roomId);
-        IMClient.getInstance().getChatRoomEntry(roomId, LIVE_URL, new RongIMClient.ResultCallback<Map<String, String>>() {
+        RTCClient.getInstance().micQuitRoom(roomId, new IRCRTCResultCallback() {
             @Override
-            public void onSuccess(Map<String, String> stringStringMap) {
-                String liveUrl = stringStringMap.get(LIVE_URL);
-                SLog.e(SLog.TAG_SEAL_MIC, "主播下麦后下发的KV map: " + stringStringMap.toString());
-                if (!TextUtils.isEmpty(liveUrl)) {
-                    SLog.e(SLog.TAG_SEAL_MIC, "主播下麦后获取的liveUrl: " + liveUrl);
-                    //如果取消连麦后，用户还需要继续观看直播，则可以调用 RongRTCEngine#subscribeLiveAVStream 接口开始观看直播。
-                    RTCClient.getInstance().subscribeLiveAVStream(liveUrl);
-                    //主播下麦之后角色变为观众
+            public void onSuccess() {
+                SLog.e(SLog.TAG_SEAL_MIC, "主播退出RTC成功");
+                IMClient.getInstance().getChatRoomEntry(roomId, LIVE_URL, new RongIMClient.ResultCallback<Map<String, String>>() {
+                    @Override
+                    public void onSuccess(Map<String, String> stringStringMap) {
+                        String liveUrl = stringStringMap.get(LIVE_URL);
+                        SLog.e(SLog.TAG_SEAL_MIC, "主播下麦后下发的KV map: " + stringStringMap.toString());
+                        if (!TextUtils.isEmpty(liveUrl)) {
+                            SLog.e(SLog.TAG_SEAL_MIC, "主播下麦后获取的liveUrl: " + liveUrl);
+                            //如果取消连麦后，用户还需要继续观看直播，则可以调用 RongRTCEngine#subscribeLiveAVStream 接口开始观看直播。
+                            RTCClient.getInstance().subscribeLiveAVStream(liveUrl);
+                            //主播下麦之后角色变为观众
 //                    CacheManager.getInstance().cacheUserRoleType(UserRoleType.AUDIENCE.getValue());
-                    callback.onSuccess(stringStringMap);
-                }
+                            callback.onSuccess(stringStringMap);
+                        }
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
+                        SLog.e(SLog.TAG_SEAL_MIC, "主播下麦失败: " + errorCode.getValue());
+                    }
+                });
             }
 
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "主播下麦失败: " + errorCode.getValue());
+            public void onFailed(RTCErrorCode rtcErrorCode) {
+                SLog.e(SLog.TAG_SEAL_MIC, "主播退出RTC失败: " + rtcErrorCode.getValue());
             }
         });
     }

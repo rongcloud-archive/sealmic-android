@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.SealMicApp;
 import cn.rongcloud.sealmicandroid.bean.repo.NetResult;
+import cn.rongcloud.sealmicandroid.bean.repo.RefreshTokenRepo;
 import cn.rongcloud.sealmicandroid.bean.repo.UserLoginRepo;
 import cn.rongcloud.sealmicandroid.bean.repo.VisitorLoginRepo;
 import cn.rongcloud.sealmicandroid.common.NetStateLiveData;
@@ -102,6 +103,7 @@ public class LoginViewModel extends ViewModel {
         return sendCodeNetStateLiveData;
     }
 
+
     public void login(String mobile, String authCode) {
         if (!TextUtils.isEmpty(mobile)
                 && !TextUtils.isEmpty(authCode)) {
@@ -186,6 +188,35 @@ public class LoginViewModel extends ViewModel {
         });
     }
 
+    public void refreshToken() {
+        NetStateLiveData<RefreshTokenRepo> refreshTokenRepoNetStateLiveData = userModel.refreshToken();
+        refreshTokenRepoNetStateLiveData.observeForever(new Observer<RefreshTokenRepo>() {
+            @Override
+            public void onChanged(RefreshTokenRepo refreshTokenRepo) {
+                //储存新Token
+                CacheManager.getInstance().cacheToken(refreshTokenRepo.getImToken());
+                IMClient.getInstance().disconnect();
+                //连接IM
+                IMClient.getInstance().connect(refreshTokenRepo.getImToken(), new RongIMClient.ConnectCallback() {
+                    @Override
+                    public void onSuccess(String s) {
+                        SLog.e(SLog.TAG_SEAL_MIC, "用户刷新Token并连接IM成功");
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
+                        SLog.e(SLog.TAG_SEAL_MIC, "用户刷新Token并连接IM失败：" + connectionErrorCode.getValue());
+                    }
+
+                    @Override
+                    public void onDatabaseOpened(RongIMClient.DatabaseOpenStatus databaseOpenStatus) {
+
+                    }
+                });
+            }
+        });
+    }
+
     public void visitorLogin() {
         if (!TextUtils.isEmpty(CacheManager.getInstance().getUserId())) {
             return;
@@ -222,7 +253,11 @@ public class LoginViewModel extends ViewModel {
 
                         @Override
                         public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
+                            if (connectionErrorCode.equals(RongIMClient.ConnectionErrorCode.RC_CONN_TOKEN_INCORRECT)) {
+                                //从 获取新 token，并重连
 
+
+                            }
                         }
 
                         @Override

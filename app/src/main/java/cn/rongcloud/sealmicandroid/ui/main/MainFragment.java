@@ -283,6 +283,9 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onRightClick() {
+                if (CacheManager.getInstance().getIsLogin()) {
+                    return;
+                }
                 mainViewModel.gotoLoginFragment(getView());
             }
         });
@@ -297,6 +300,9 @@ public class MainFragment extends Fragment {
 
                 @Override
                 public void onRightClick() {
+                    if (CacheManager.getInstance().getIsLogin()) {
+                        return;
+                    }
                     mainViewModel.gotoLoginFragment(getView());
                 }
             });

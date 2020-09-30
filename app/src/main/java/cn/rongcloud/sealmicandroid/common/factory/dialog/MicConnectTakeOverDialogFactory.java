@@ -76,13 +76,12 @@ public class MicConnectTakeOverDialogFactory extends BottomDialogFactory {
         headView.measure(0, 0);
         userName = headView.findViewById(R.id.item_dialog_name);
         micPosition = headView.findViewById(R.id.item_dialog_mic);
+        portrait = headView.findViewById(R.id.item_dialog_img);
         root.measure(0, 0);
         //显示发消息按钮的时候再设置头布局
 //        if (isShowMessageButton) {
 //            lp.height = root.getMeasuredHeight() * hosteling.length + headView.getMeasuredHeight();
 //        }
-        // 透明度
-        lp.alpha = 9f;
         dialogWindow.setAttributes(lp);
         root.addHeaderView(headView);
 

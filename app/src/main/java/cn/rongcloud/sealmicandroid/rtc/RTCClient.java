@@ -14,16 +14,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.rongcloud.rtc.api.RCRTCAudioMixer;
+import cn.rongcloud.rtc.api.RCRTCConfig;
 import cn.rongcloud.rtc.api.RCRTCEngine;
 import cn.rongcloud.rtc.api.RCRTCRemoteUser;
 import cn.rongcloud.rtc.api.RCRTCRoom;
 import cn.rongcloud.rtc.api.callback.IRCRTCResultCallback;
 import cn.rongcloud.rtc.api.callback.IRCRTCResultDataCallback;
 import cn.rongcloud.rtc.api.callback.IRCRTCStatusReportListener;
+import cn.rongcloud.rtc.api.callback.RCRTCLiveCallback;
 import cn.rongcloud.rtc.api.report.StatusBean;
 import cn.rongcloud.rtc.api.report.StatusReport;
+import cn.rongcloud.rtc.api.stream.RCRTCAudioInputStream;
 import cn.rongcloud.rtc.api.stream.RCRTCInputStream;
 import cn.rongcloud.rtc.api.stream.RCRTCLiveInfo;
+import cn.rongcloud.rtc.api.stream.RCRTCVideoInputStream;
+import cn.rongcloud.rtc.base.RCRTCAVStreamType;
 import cn.rongcloud.rtc.base.RCRTCRoomType;
 import cn.rongcloud.rtc.base.RTCErrorCode;
 import cn.rongcloud.sealmicandroid.SealMicApp;
@@ -62,8 +67,14 @@ public class RTCClient {
     }
 
     public void init() {
+        RCRTCConfig config = RCRTCConfig.Builder.create()
+                //是否硬解码
+                .enableHardwareDecoder(true)
+                //是否使用硬编码
+                .enableHardwareEncoder(true)
+                .build();
         //使用默认配置，直接传null
-        RCRTCEngine.getInstance().init(SealMicApp.getApplication(), null);
+        RCRTCEngine.getInstance().init(SealMicApp.getApplication(), config);
     }
 
     public void unInit() {
@@ -233,18 +244,8 @@ public class RTCClient {
     /**
      * 主播退出语音聊天房间
      */
-    public void micQuitRoom(String roomId) {
-        RCRTCEngine.getInstance().leaveRoom(new IRCRTCResultCallback() {
-            @Override
-            public void onSuccess() {
-                SLog.e(SLog.TAG_SEAL_MIC, "主播退出RTC成功");
-            }
-
-            @Override
-            public void onFailed(RTCErrorCode rtcErrorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "主播退出RTC失败: " + rtcErrorCode.getValue());
-            }
-        });
+    public void micQuitRoom(String roomId, IRCRTCResultCallback ircrtcResultCallback) {
+        RCRTCEngine.getInstance().leaveRoom(ircrtcResultCallback);
     }
 
     /**
@@ -253,14 +254,25 @@ public class RTCClient {
      * @param liveUrl 直播URL final SealMicResultCallback<RongRTCVideoView> callback
      */
     public void subscribeLiveAVStream(String liveUrl) {
-        RCRTCEngine.getInstance().subscribeLiveStream(liveUrl, RCRTCRoomType.LIVE_AUDIO, new IRCRTCResultDataCallback<List<RCRTCInputStream>>() {
+        RCRTCEngine.getInstance().subscribeLiveStream(liveUrl, RCRTCAVStreamType.AUDIO, new RCRTCLiveCallback() {
             @Override
-            public void onSuccess(List<RCRTCInputStream> rcrtcInputStreams) {
+            public void onSuccess() {
+                Log.e(SLog.TAG_SEAL_MIC, "onSuccess");
+            }
+
+            @Override
+            public void onVideoStreamReceived(RCRTCVideoInputStream rcrtcVideoInputStream) {
+                Log.e(SLog.TAG_SEAL_MIC, "onVideoStreamReceived");
+            }
+
+            @Override
+            public void onAudioStreamReceived(RCRTCAudioInputStream rcrtcAudioInputStream) {
+                Log.e(SLog.TAG_SEAL_MIC, "onAudioStreamReceived");
             }
 
             @Override
             public void onFailed(RTCErrorCode rtcErrorCode) {
-                Log.i("TAG", rtcErrorCode.toString());
+                Log.e(SLog.TAG_SEAL_MIC, rtcErrorCode.toString());
             }
         });
     }

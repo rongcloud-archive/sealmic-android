@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.slice.Slice;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -99,6 +100,7 @@ import cn.rongcloud.sealmicandroid.ui.login.LoginViewModel;
 import cn.rongcloud.sealmicandroid.ui.room.adapter.RoomChatMessageListAdapter;
 import cn.rongcloud.sealmicandroid.ui.room.member.RoomMemberViewModel;
 import cn.rongcloud.sealmicandroid.ui.widget.CustomDynamicAvatar;
+import cn.rongcloud.sealmicandroid.ui.widget.LoadDialog;
 import cn.rongcloud.sealmicandroid.ui.widget.MicTextLayout;
 import cn.rongcloud.sealmicandroid.util.ButtonDelayUtil;
 import cn.rongcloud.sealmicandroid.util.KeyBoardUtil;
@@ -110,6 +112,7 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.ChatRoomInfo;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
+import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.ChatRoomKVNotiMessage;
 import io.rong.message.RecallNotificationMessage;
@@ -183,6 +186,7 @@ public class ChatRoomFragment extends Fragment {
             SLog.d(TAG, TextUtils.isEmpty(roomId) ? "" : roomId);
             SLog.d(TAG, TextUtils.isEmpty(roomName) ? "" : roomName);
         }
+        CacheManager.getInstance().cacheMicBean(null);
     }
 
     @Nullable
@@ -317,6 +321,13 @@ public class ChatRoomFragment extends Fragment {
         int inputLevel = eventAudioInputLevel.getInputLevel();
         // > 0表示正在讲话
         if (inputLevel > 0) {
+            //判断该麦位是否有人，防止在房间内意外退出，再次进来后麦位说话图标错位
+            MicBean micBean = localMicBeanMap.get(position);
+            if (micBean == null || micBean.getUserId().isEmpty() ||
+                    micBean.getState() == MicState.LOCK.getState() ||
+                    micBean.getState() == MicState.CLOSE.getState()) {
+                return;
+            }
             dynamicAvatarViewList.get(position).startSpeak();
         } else {
             dynamicAvatarViewList.get(position).stopSpeak();
@@ -415,22 +426,25 @@ public class ChatRoomFragment extends Fragment {
             localMicBeanMap.put(newMicBean.getPosition(), newMicBean);
             if (newMicBean != null) {
                 //1. 根据新返回来的KV更新UI
-                if (newMicBean.getState() == MicState.NORMAL.getState()) {
-                    //用户下麦
-                    dynamicAvatarViewList.get(newMicBean.getPosition()).micDelUser();
-                    //主持人
-                    if (UserRoleType.HOST.isHost(CacheManager.getInstance().getUserRoleType())) {
-                        if (newMicBean.getUserId().equals(CacheManager.getInstance().getUserId())) {
-                            micTextLayoutList.get(newMicBean.getPosition()).HasMic("号麦位");
-                        } else {
+                if (newMicBean.getState() == MicState.NORMAL.getState() || newMicBean.getState() == MicState.CLOSE.getState()) {
+                    if (newMicBean.getUserId() == null || newMicBean.getUserId().isEmpty()) {
+                        //麦位没人,用户下麦
+                        dynamicAvatarViewList.get(newMicBean.getPosition()).micDelUser();
+                        //主持人
+                        if (UserRoleType.HOST.isHost(CacheManager.getInstance().getUserRoleType())) {
+                            if (newMicBean.getUserId().equals(CacheManager.getInstance().getUserId())) {
+                                micTextLayoutList.get(newMicBean.getPosition()).HasMic("号麦位");
+                            } else {
+                                micTextLayoutList.get(newMicBean.getPosition()).NullMic("号麦位");
+                            }
+                        }
+                        //连麦者
+                        if (UserRoleType.CONNECT_MIC.isConnectMic(CacheManager.getInstance().getUserRoleType()) ||
+                                UserRoleType.AUDIENCE.isAudience(CacheManager.getInstance().getUserRoleType())) {
                             micTextLayoutList.get(newMicBean.getPosition()).NullMic("号麦位");
                         }
                     }
-                    //连麦者
-                    if (UserRoleType.CONNECT_MIC.isConnectMic(CacheManager.getInstance().getUserRoleType()) ||
-                            UserRoleType.AUDIENCE.isAudience(CacheManager.getInstance().getUserRoleType())) {
-                        micTextLayoutList.get(newMicBean.getPosition()).NullMic("号麦位");
-                    }
+
                     List<String> ids = new ArrayList<>();
                     ids.add(newMicBean.getUserId());
                     chatRoomViewModel.userBatch(ids);
@@ -450,20 +464,28 @@ public class ChatRoomFragment extends Fragment {
                                         memberBean.getPortrait(),
                                         dynamicAvatarViewList.get(finalNewMicBean.getPosition()).getUserImg());
 
+                                if (newMicBean.getState() == MicState.CLOSE.getState()) {
+                                    //闭麦
+                                    dynamicAvatarViewList.get(newMicBean.getPosition()).bankMic();
+                                } else {
+                                    dynamicAvatarViewList.get(newMicBean.getPosition()).unBankMic();
+                                }
                             }
                         }
                     });
                 } else if (newMicBean.getState() == MicState.LOCK.getState()) {
                     //麦位锁定
                     dynamicAvatarViewList.get(newMicBean.getPosition()).lockMic();
-                } else if (newMicBean.getState() == MicState.CLOSE.getState()) {
-                    //闭麦
-                    dynamicAvatarViewList.get(newMicBean.getPosition()).bankMic();
                 }
+//                else if (newMicBean.getState() == MicState.CLOSE.getState()) {
+//                    闭麦
+//                    dynamicAvatarViewList.get(newMicBean.getPosition()).bankMic();
+//            }
 
                 //2. 被点的人是自己
                 if (newMicBean.getUserId().equals(userId)) {
                     if (UserRoleType.AUDIENCE.isAudience(currentUserType)) {
+                        SLog.e(SLog.TAG_SEAL_MIC, "观众申请上麦");
                         //观众上麦
                         chatRoomViewModel.switchMic(roomId, CacheManager.getInstance().getUserRoleType(),
                                 newMicBean.getPosition() == 0
@@ -491,7 +513,8 @@ public class ChatRoomFragment extends Fragment {
 
                                     @Override
                                     public void onFail(int errorCode) {
-
+                                        //观众申请上麦失败
+                                        SLog.e(SLog.TAG_SEAL_MIC, "观众上麦失败：" + errorCode);
                                     }
                                 });
                     }
@@ -517,6 +540,7 @@ public class ChatRoomFragment extends Fragment {
                             SealMicConstant.KV_SPEAK_POSITION_PREFIX + (currentMicBean != null ? currentMicBean.getPosition() : 0),
                             speakingValue);
 
+                    SLog.e(SLog.TAG_SEAL_MIC, "Cache的麦位信息Position：" + newMicBean.getPosition());
                     //将本地保存的当前用户的麦位信息更新为新麦位的信息
                     CacheManager.getInstance().cacheMicBean(newMicBean);
                     //上麦情况下刷新本地map
@@ -526,11 +550,11 @@ public class ChatRoomFragment extends Fragment {
 
                     //如果 changeType 不是 （4，5，6）中的一种并且当前用户的麦位信息存在（也就是当前用户在麦位上）并且新麦位的序号等于当前用户时
                     int changeType = kvExtraBean.getChangeType();
-                    //456 3种情况为不用下麦的情况
+                    //456 4种情况为不用下麦的情况
                     if (changeType != 4
                             && changeType != 5
                             && changeType != 6
-                            && currentMicBean != null
+                            && !currentMicBean.getUserId().isEmpty()
                             && currentMicBean.getPosition() == newMicBean.getPosition()) {
                         //主播下麦
                         chatRoomViewModel.switchMic(roomId,
@@ -570,7 +594,8 @@ public class ChatRoomFragment extends Fragment {
                         //更新本地kv列表
                         currentMicBean.setUserId("");
                         //下麦后刷新本地麦位map
-                        localMicBeanMap.put(currentMicBean.getPosition(), currentMicBean);
+//                        localMicBeanMap.put(currentMicBean.getPosition(), currentMicBean);
+                        SLog.e(SLog.TAG_SEAL_MIC, "Cache了一个nullMicBean麦位信息");
                         //将本地保存的当前用户的麦位信息更新为新麦位的信息
                         CacheManager.getInstance().cacheMicBean(null);
                     }
@@ -745,11 +770,13 @@ public class ChatRoomFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventUserRoleType(Event.EventUserRoleType eventUserRoleType) {
         if (UserRoleType.AUDIENCE.isAudience(eventUserRoleType.getUserRoleType().getValue())) {
+            SLog.e(SLog.TAG_SEAL_MIC, "观众下麦，隐藏图标");
             fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.GONE);
             fragmentChatRoomBinding.chatroomVoice.setVisibility(View.GONE);
         }
         if (UserRoleType.HOST.isHost(eventUserRoleType.getUserRoleType().getValue())
                 || UserRoleType.CONNECT_MIC.isConnectMic(eventUserRoleType.getUserRoleType().getValue())) {
+            SLog.e(SLog.TAG_SEAL_MIC, "有人上麦，显示图标");
             fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.VISIBLE);
             fragmentChatRoomBinding.chatroomVoice.setVisibility(View.VISIBLE);
         }
@@ -1148,6 +1175,7 @@ public class ChatRoomFragment extends Fragment {
     }
 
     public void initRoom() {
+        LoadDialog.show(requireContext());
         //根据不同的用户角色定义不同的逻辑，例如不同用户角色对应不同的操作权限和UI展示，
         if (UserRoleType.AUDIENCE.isAudience(userRoleType.getValue())) {
             fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.GONE);
@@ -1164,6 +1192,7 @@ public class ChatRoomFragment extends Fragment {
                     boolean speakerphoneOn = RTCClient.getInstance().isSpeakerphoneOn(SealMicApp.getApplication());
                     fragmentChatRoomBinding.chatroomVoiceOut.setSelected(!speakerphoneOn);
                     RTCClient.getInstance().setSpeakerEnable(speakerphoneOn);
+                    LoadDialog.dismiss(requireContext());
                 }
 
                 @Override
@@ -1174,6 +1203,7 @@ public class ChatRoomFragment extends Fragment {
         }
         if (UserRoleType.HOST.isHost(userRoleType.getValue())
                 || UserRoleType.CONNECT_MIC.isConnectMic(userRoleType.getValue())) {
+            SLog.e(SLog.TAG_SEAL_MIC, "当前是主持人，显示Mic等图标");
             fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.VISIBLE);
             fragmentChatRoomBinding.chatroomVoice.setVisibility(View.VISIBLE);
             RoomManager.getInstance().micJoinRoom(roomId, new RongIMClient.ResultCallback<String>() {
@@ -1190,6 +1220,7 @@ public class ChatRoomFragment extends Fragment {
                     boolean speakerphoneOn = RTCClient.getInstance().isSpeakerphoneOn(SealMicApp.getApplication());
                     fragmentChatRoomBinding.chatroomVoiceOut.setSelected(!speakerphoneOn);
                     RTCClient.getInstance().setSpeakerEnable(speakerphoneOn);
+                    LoadDialog.dismiss(requireContext());
                 }
 
                 @Override
@@ -1296,6 +1327,43 @@ public class ChatRoomFragment extends Fragment {
                             });
                         }
                         EventBus.getDefault().postSticky(new Event.EventMicBean(micBean));
+                        //处理由于各种原因离开，比如说用户手动杀了进程，再进来时初始化，如果下发的麦位信息中有自己，则执行上麦操作
+                        if (CacheManager.getInstance().getUserId().equals(micBean.getUserId())) {
+                            SLog.e(SLog.TAG_SEAL_MIC, "initMic：加入房间时麦位上有我，上麦");
+                            chatRoomViewModel.switchMic(roomId,
+                                    CacheManager.getInstance().getUserRoleType(),
+                                    micBean.getPosition() == 0
+                                            ? UserRoleType.HOST.getValue()
+                                            : UserRoleType.CONNECT_MIC.getValue(),
+                                    new SealMicResultCallback<Map<String, String>>() {
+                                        @Override
+                                        public void onSuccess(Map<String, String> stringStringMap) {
+                                            SLog.e(SLog.TAG_SEAL_MIC, "初始化的麦位信息中已经包含刚加入此房间的自己，上麦成功");
+                                            EventBus.getDefault().post(
+                                                    micBean.getPosition() == 0
+                                                            ? new Event.EventUserRoleType(UserRoleType.HOST, true)
+                                                            : new Event.EventUserRoleType(UserRoleType.CONNECT_MIC, true));
+                                            //上麦成功之后默认麦克风可用
+                                            if (micBean.getState() == MicState.CLOSE.getState()) {
+                                                fragmentChatRoomBinding.chatroomVoiceIn.setSelected(true);
+                                                RTCClient.getInstance().setLocalMicEnable(false);
+                                            }
+                                            if (micBean.getState() == MicState.NORMAL.getState()) {
+                                                fragmentChatRoomBinding.chatroomVoiceIn.setSelected(false);
+                                                RTCClient.getInstance().setLocalMicEnable(true);
+                                            }
+                                            //更新micBean信息
+                                            CacheManager.getInstance().cacheMicBean(micBean);
+                                            //更新本地的麦位信息缓存
+                                            localMicBeanMap.put(micBean.getPosition(), micBean);
+                                        }
+
+                                        @Override
+                                        public void onFail(int errorCode) {
+                                            SLog.e(SLog.TAG_SEAL_MIC, "初始化的麦位信息中已经包含刚加入此房间的自己，上麦失败");
+                                        }
+                                    });
+                        }
                     }
 
                     @Override
@@ -1344,6 +1412,8 @@ public class ChatRoomFragment extends Fragment {
                     micPresentAudience(clickMicBean);
                 }
             }
+        } else {
+            SLog.e(SLog.TAG_SEAL_MIC, "点的麦位MicBean为Null");
         }
     }
 
@@ -1435,6 +1505,11 @@ public class ChatRoomFragment extends Fragment {
                                 @Override
                                 public void onChanged(Integer integer) {
                                     SLog.e(SLog.TAG_SEAL_MIC, "连麦者下麦");
+                                    //有一个展示则代表另一个控件也在展示
+                                    if (fragmentChatRoomBinding.chatroomVoiceIn.getVisibility() == View.VISIBLE) {
+                                        fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.GONE);
+                                        fragmentChatRoomBinding.chatroomVoice.setVisibility(View.GONE);
+                                    }
                                     dialog.cancel();
                                 }
                             });
@@ -1615,6 +1690,12 @@ public class ChatRoomFragment extends Fragment {
                                     @Override
                                     public void onChanged(Integer integer) {
                                         ToastUtil.showToast("接管主持");
+//                                        if (fragmentChatRoomBinding.chatroomVoiceIn.getVisibility() == View.GONE) {
+//                                            //接管成功后显示麦克风图标
+//                                            fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.VISIBLE);
+//                                            //显示伴音图标
+//                                            fragmentChatRoomBinding.chatroomVoice.setVisibility(View.VISIBLE);
+//                                        }
                                         dialog.cancel();
                                     }
                                 });
@@ -1641,8 +1722,11 @@ public class ChatRoomFragment extends Fragment {
                                     if (micBean.getState() == MicState.NORMAL.getState() || micBean.getState() == MicState.CLOSE.getState()) {
                                         //判断当前是否在排麦列表
                                         for (int i = 0; i < localMicBeanMap.size(); i++) {
-                                            if (localMicBeanMap.get(i).getUserId().equals(CacheManager.getInstance().getUserId())) {
-//                                                ToastUtil.showToast(getResources().getString(R.string.already_at_miclilst));
+                                            MicBean bean = localMicBeanMap.get(i);
+                                            if (bean == null) {
+                                                continue;
+                                            }
+                                            if (bean.getUserId().equals(CacheManager.getInstance().getUserId())) {
                                                 dialog.cancel();
                                                 return;
                                             }
@@ -1653,7 +1737,14 @@ public class ChatRoomFragment extends Fragment {
                                             @Override
                                             public void onChanged(Integer integer) {
                                                 if (result.isSuccess()) {
+                                                    SLog.e(SLog.TAG_SEAL_MIC, "观众申请排麦请求发送成功");
 //                                                    ToastUtil.showToast("观众申请排麦");
+//                                                    if (fragmentChatRoomBinding.chatroomVoiceIn.getVisibility() == View.GONE) {
+////                                                        //接管成功后显示麦克风图标
+////                                                        fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.VISIBLE);
+////                                                        //显示伴音图标
+////                                                        fragmentChatRoomBinding.chatroomVoice.setVisibility(View.VISIBLE);
+////                                                    }
                                                     dialog.cancel();
                                                 }
                                             }
@@ -1788,6 +1879,10 @@ public class ChatRoomFragment extends Fragment {
                                     @Override
                                     public void onChanged(Integer integer) {
                                         ToastUtil.showToast("接管主持");
+//                                        if (fragmentChatRoomBinding.chatroomVoiceIn.getVisibility() == View.GONE) {
+//                                            fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.VISIBLE);
+//                                            fragmentChatRoomBinding.chatroomVoice.setVisibility(View.VISIBLE);
+//                                        }
                                         dialog.cancel();
                                     }
                                 });
@@ -1828,6 +1923,11 @@ public class ChatRoomFragment extends Fragment {
                                 @Override
                                 public void onChanged(Integer integer) {
                                     ToastUtil.showToast("连麦者下麦");
+                                    //有一个展示则代表另一个控件也在展示
+                                    if (fragmentChatRoomBinding.chatroomVoiceIn.getVisibility() == View.VISIBLE) {
+                                        fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.GONE);
+                                        fragmentChatRoomBinding.chatroomVoice.setVisibility(View.GONE);
+                                    }
                                     dialog.cancel();
                                 }
                             });
@@ -1839,6 +1939,9 @@ public class ChatRoomFragment extends Fragment {
                     chatRoomViewModel.getUserinfolistRepoLiveData().observe(getViewLifecycleOwner(), new Observer<NetResult<List<RoomMemberRepo.MemberBean>>>() {
                         @Override
                         public void onChanged(NetResult<List<RoomMemberRepo.MemberBean>> listNetResult) {
+                            if (listNetResult == null || listNetResult.getData() == null || listNetResult.getData().size() <= 0) {
+                                return;
+                            }
                             RoomMemberRepo.MemberBean memberBean = listNetResult.getData().get(0);
                             micConnectFactory.setUserName(memberBean.getUserName());
                             micConnectFactory.setPortrait(memberBean.getPortrait());

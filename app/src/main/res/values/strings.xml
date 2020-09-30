@@ -25,13 +25,14 @@
     <string name="room_pic">房间主题图</string>
     <string name="room_random_pic">随机图</string>
     <string name="create_room">好了</string>
+    <string name="create_room_content">创建房间</string>
 
     <string name="welcome_join_room">加入了房间</string>
     <string name="please_login">请先登录</string>
 
     <string name="room_notice">公告</string>
     <string name="have_done">知道了</string>
-    <string name="notice_content">这是房间公告 \n\n 请文明聊天，可以聊天，唱歌，送礼。 \n\n 禁止黄赌毒，禁止骂人，禁止一切需要禁止的事情。</string>
+    <string name="notice_content">这是房间公告 \n\n 请文明聊天，可以聊天，唱歌，送礼。 \n\n 禁止黄赌毒，禁止骂人。</string>
     <string name="tv_take_over_title">%s 想接管主持，是否同意？</string>
     <string name="tv_hand_over_title">%s 想转让主持，是否同意？</string>
     <string name="dialog_agree">同意</string>

@@ -17,7 +17,9 @@ import java.util.List;
 
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.SealMicApp;
+import cn.rongcloud.sealmicandroid.common.constant.SealMicErrorMsg;
 import cn.rongcloud.sealmicandroid.im.message.SendGiftMessage;
+import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
@@ -83,62 +85,67 @@ public class RoomChatMessageListAdapter extends BaseAdapter {
     }
 
     private void updateView(int viewType, final int position, final Message message, ViewHolder viewHolder) {
-        String name = "";
-        String contentTv = "";
-        //是否显示背景
-        boolean isShowBackground = false;
-        MessageContent content = message.getContent();
-        String objectName = message.getObjectName();
-        if (content instanceof SendGiftMessage) {
-            SendGiftMessage sendGiftMessage = (SendGiftMessage) content;
-            name = sendGiftMessage.getUserInfo().getName();
-            contentTv = sendGiftMessage.getContent();
-            isShowBackground = false;
-        }
-        if (content instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) content;
-            name = textMessage.getUserInfo().getName();
-            contentTv = textMessage.getContent();
-            if (contentTv.equals(context.getResources().getString(R.string.join_room_success))) {
+        try {
+            String name = "";
+            String contentTv = "";
+            //是否显示背景
+            boolean isShowBackground = false;
+            MessageContent content = message.getContent();
+            String objectName = message.getObjectName();
+            if (content instanceof SendGiftMessage) {
+                SendGiftMessage sendGiftMessage = (SendGiftMessage) content;
+                name = sendGiftMessage.getUserInfo().getName();
+                contentTv = sendGiftMessage.getContent();
                 isShowBackground = false;
-            } else {
-                isShowBackground = true;
             }
-        }
+            if (content instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) content;
+                name = textMessage.getUserInfo().getName();
+                contentTv = textMessage.getContent();
+                if (contentTv.contains(context.getResources().getString(R.string.join_room_success))) {
+                    isShowBackground = false;
+                } else {
+                    isShowBackground = true;
+                }
+            }
 
-        if (TextUtils.isEmpty(name)) {
-            viewHolder.messageTv.setVisibility(View.GONE);
-            viewHolder.nickNameTv.setVisibility(View.GONE);
-        } else {
-            //是否展示背景
-            if (isShowBackground) {
-                viewHolder.constraintLayout.setBackgroundResource(R.drawable.bg_room_message_item);
+            if (TextUtils.isEmpty(name)) {
+                viewHolder.messageTv.setVisibility(View.GONE);
+                viewHolder.nickNameTv.setVisibility(View.GONE);
             } else {
-                viewHolder.constraintLayout.setBackgroundResource(R.drawable.bg_room_message_item_gong);
-            }
-            viewHolder.nickNameTv.setText(name + ": ");
-            viewHolder.messageTv.setText(contentTv);
-            if (objectName != null) {
-                if (objectName.equals(SealMicApp.getApplication().getResources().getString(R.string.object_name))) {
-                    viewHolder.nickNameTv.setText(name);
-                    viewHolder.messageTv.setTextColor(Color.parseColor("#F8E71C"));
-                    viewHolder.nickNameTv.setTextColor(Color.parseColor("#F8E71C"));
+                //是否展示背景
+                if (isShowBackground) {
+                    viewHolder.constraintLayout.setBackgroundResource(R.drawable.bg_room_message_item);
+                } else {
+                    viewHolder.constraintLayout.setBackgroundResource(R.drawable.bg_room_message_item_gong);
+                }
+                viewHolder.nickNameTv.setText(name + ": ");
+                viewHolder.messageTv.setText(contentTv);
+                if (objectName != null) {
+                    if (objectName.equals(SealMicApp.getApplication().getResources().getString(R.string.object_name))) {
+                        viewHolder.nickNameTv.setText(name);
+                        viewHolder.messageTv.setTextColor(Color.parseColor("#F8E71C"));
+                        viewHolder.nickNameTv.setTextColor(Color.parseColor("#F8E71C"));
+                    } else {
+                        viewHolder.messageTv.setTextColor(Color.parseColor("#FFFFFF"));
+                        viewHolder.nickNameTv.setTextColor(Color.parseColor("#CFCFCF"));
+                    }
                 } else {
                     viewHolder.messageTv.setTextColor(Color.parseColor("#FFFFFF"));
                     viewHolder.nickNameTv.setTextColor(Color.parseColor("#CFCFCF"));
                 }
-            } else {
-                viewHolder.messageTv.setTextColor(Color.parseColor("#FFFFFF"));
-                viewHolder.nickNameTv.setTextColor(Color.parseColor("#CFCFCF"));
             }
+
+            viewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callClick.onClick(position, message);
+                }
+            });
+        } catch (Exception e) {
+            SLog.e(SLog.TAG_SEAL_MIC, "Error: " + e.getMessage());
         }
 
-        viewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callClick.onClick(position, message);
-            }
-        });
     }
 
 
