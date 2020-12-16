@@ -95,6 +95,11 @@ public class LoginFragment extends Fragment {
             @Override
             public void onRightClick() {
             }
+
+            @Override
+            public void onTitleLongClick() {
+
+            }
         });
         fragmentLoginBinding.loginTopBar.hideRightText();
         fragmentLoginBinding.loginCommit.setAlpha(0.5f);

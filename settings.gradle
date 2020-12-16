@@ -1,3 +1,4 @@
+include ':IMLib'
 rootProject.name = 'Sealmic-android'
 include ':app', ':IMKit_Source'
 

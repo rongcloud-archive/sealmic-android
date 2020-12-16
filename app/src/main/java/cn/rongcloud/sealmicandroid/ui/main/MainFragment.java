@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.rongcloud.sealmicandroid.BuildConfig;
+import cn.rongcloud.sealmicandroid.DebugActivity;
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.bean.repo.RoomDetailRepo;
 import cn.rongcloud.sealmicandroid.bean.repo.RoomListRepo;
@@ -53,6 +55,7 @@ import cn.rongcloud.sealmicandroid.ui.login.LoginViewModel;
 import cn.rongcloud.sealmicandroid.ui.room.ChatRoomViewModel;
 import cn.rongcloud.sealmicandroid.ui.room.adapter.ChatRoomRefreshAdapter;
 import cn.rongcloud.sealmicandroid.ui.widget.CustomTitleBar;
+import cn.rongcloud.sealmicandroid.ui.widget.PromptDialog;
 import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 
@@ -66,9 +69,9 @@ public class MainFragment extends Fragment {
     private LoginViewModel loginViewModel;
     private MainFragmentBinding mainFragmentBinding;
     /**
-     * 固定大小
+     * 加载数量
      */
-    final int pageSize = 12;
+    private int pageSize = 12;
 
     /**
      * 起始页（从0开始）
@@ -99,6 +102,8 @@ public class MainFragment extends Fragment {
 
     private List<RoomListRepo.RoomsBean> roomsBeanList = new ArrayList<>();
 
+    private GridLayoutManager mainListLayoutManager;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +115,8 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        super.onCreateView(inflater, container, savedInstanceState);
+        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         appVersionViewModel = new ViewModelProvider(this, new CommonViewModelFactory()).get(AppVersionViewModel.class);
         chatRoomViewModel = new ViewModelProvider(this,
                 new CommonViewModelFactory()).get(ChatRoomViewModel.class);
@@ -122,7 +128,6 @@ public class MainFragment extends Fragment {
         return mainFragmentBinding.getRoot();
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -130,7 +135,14 @@ public class MainFragment extends Fragment {
         //检查版本更新
         checkAppVersion();
         startIndex = "";
-        loadData(startIndex, pageSize, MainLoadData.PULL_REFRESH.getValue());
+        //定位到上次位置
+        int position = mainViewModel.getMainListPosition();
+        if (position != -1) {
+            if (position > pageSize - 1) {
+                pageSize = position + 1;
+            }
+        }
+        loadData(startIndex, pageSize, MainLoadData.LOAD_DATA.getValue());
     }
 
     /**
@@ -189,8 +201,10 @@ public class MainFragment extends Fragment {
         mainRoomRecyclerView = mainFragmentBinding.mainChatroomRv;
         chatRoomRefreshAdapter = new ChatRoomRefreshAdapter();
         chatRoomRefreshAdapter.setItemOnClickListener(new RoomListItemOnClickListener() {
+
             @Override
-            public void onClick(final View view, final RoomListRepo.RoomsBean roomsBean) {
+            public void onClick(final View view, final RoomListRepo.RoomsBean roomsBean, int position) {
+                mainViewModel.setMainListPosition(position);
                 clickWhere = 1;
                 roomInfo = roomsBean;
                 if (checkPermissions()) {
@@ -240,12 +254,12 @@ public class MainFragment extends Fragment {
                 }
             }
         });
-        mainRoomRecyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        mainListLayoutManager = new GridLayoutManager(requireActivity(), 2);
+        mainRoomRecyclerView.setLayoutManager(mainListLayoutManager);
         mainRoomRecyclerView.setAdapter(chatRoomRefreshAdapter);
         mainRoomRecyclerView.setLoadingMoreEnabled(true);
         mainRoomRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mainRoomRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.SquareSpin);
-
         View refreshHeader = LayoutInflater.from(requireContext()).inflate(R.layout.list_refresh_header, null);
         TextView currentVersionNameTextView = refreshHeader.findViewById(R.id.current_version_name);
         String versionName = String.format(getResources().getString(R.string.current_version), BuildConfig.VERSION_NAME);
@@ -288,6 +302,11 @@ public class MainFragment extends Fragment {
                 }
                 mainViewModel.gotoLoginFragment(getView());
             }
+
+            @Override
+            public void onTitleLongClick() {
+                showDebugActivity();
+            }
         });
         if (CacheManager.getInstance().getIsLogin()) {
             mainFragmentBinding.mainTitle.setRightUrl(CacheManager.getInstance().getUserPortrait());
@@ -304,6 +323,11 @@ public class MainFragment extends Fragment {
                         return;
                     }
                     mainViewModel.gotoLoginFragment(getView());
+                }
+
+                @Override
+                public void onTitleLongClick() {
+                    showDebugActivity();
                 }
             });
         } else {
@@ -350,8 +374,59 @@ public class MainFragment extends Fragment {
                     roomsBeanList.addAll(rooms);
                     mainRoomRecyclerView.loadMoreComplete();
                 }
+                if (rooms.size() > 0 && !CacheManager.getInstance().getLastCreateRoomId().isEmpty()
+                        && MainLoadData.LOCATE_CREATE.getValue() != value) {
+                    boolean isHaveLastCreateRoom = false;
+                    int createTarget = 0;
+                    for (int i = 0; i < rooms.size(); i++) {
+                        RoomListRepo.RoomsBean roomsBean = rooms.get(i);
+                        if (roomsBean.getRoomId().equals(CacheManager.getInstance().getLastCreateRoomId())) {
+                            isHaveLastCreateRoom = true;
+                            createTarget = i;
+                            break;
+                        }
+                    }
+                    if (isHaveLastCreateRoom) {
+                        mainViewModel.setMainListPosition(createTarget);
+                        CacheManager.getInstance().cacheLastCreateRoomId("");
+                        loadData(startIndex, createTarget + 1, MainLoadData.LOCATE_CREATE.getValue());
+                    } else {
+                        //请求所有数据
+                        loadData(startIndex, roomListRepo.getTotalCount() + 1, MainLoadData.LOCATE_CREATE.getValue());
+                    }
+                    return;
+                }
+                if (MainLoadData.LOCATE_CREATE.getValue() == value) {
+                    chatRoomRefreshAdapter.addData(rooms);
+                    roomsBeanList.addAll(rooms);
+                    mainRoomRecyclerView.loadMoreComplete();
+                    if (!CacheManager.getInstance().getLastCreateRoomId().isEmpty()) {
+                        //这里就请求了所有数据，找出刚才所创建新的房间下标，定位到该位置
+                        for (int i = 0; i < rooms.size(); i++) {
+                            RoomListRepo.RoomsBean roomsBean = rooms.get(i);
+                            if (roomsBean.getRoomId().equals(CacheManager.getInstance().getLastCreateRoomId())) {
+                                mainViewModel.setMainListPosition(i);
+                                CacheManager.getInstance().cacheLastCreateRoomId("");
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                if (MainLoadData.LOAD_DATA.getValue() == value) {
+                    pageSize = 12;
+                    chatRoomRefreshAdapter.addData(rooms);
+                    roomsBeanList.addAll(rooms);
+                    mainRoomRecyclerView.loadMoreComplete();
+                }
                 RoomListRepo.RoomsBean room = rooms.get(rooms.size() - 1);
                 startIndex = room.getRoomId();
+                //定位到上次位置
+                int position = mainViewModel.getMainListPosition();
+                if (position != -1) {
+                    mainListLayoutManager.scrollToPositionWithOffset(position, 0);
+                    mainViewModel.setMainListPosition(-1);
+                }
             }
         });
     }
@@ -427,5 +502,26 @@ public class MainFragment extends Fragment {
             mainRoomRecyclerView = null;
         }
         EventBus.getDefault().unregister(this);
+    }
+
+    private void showDebugActivity(){
+//        if (!CacheManager.getInstance().getDebugMode()) {
+            PromptDialog dialog = PromptDialog.newInstance(requireActivity(), "",
+                    getResources().getString(R.string.about_opening_debug));
+            dialog.setPromptButtonClickedListener(new PromptDialog.OnPromptButtonClickedListener() {
+                @Override
+                public void onPositiveButtonClicked() {
+                    CacheManager.getInstance().cacheDebugMode(true);
+                    Toast.makeText(requireActivity(), R.string.about_opened_debug,
+                            Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(requireActivity(), DebugActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onNegativeButtonClicked() {
+                }
+            }).show();
+//        }
     }
 }

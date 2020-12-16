@@ -1,5 +1,6 @@
 package cn.rongcloud.sealmicandroid.im;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -104,16 +105,12 @@ public class IMClient {
         // 可在初始 SDK 时直接带入融云 IM 申请的APP KEY
         RongIMClient.init(context, BuildConfig.Rong_key, false);
 
-        try {
-            RongIMClient.registerMessageType(RoomMemberChangedMessage.class);
-            RongIMClient.registerMessageType(SendGiftMessage.class);
-            RongIMClient.registerMessageType(SendBroadcastGiftMessage.class);
-            RongIMClient.registerMessageType(KickMemberMessage.class);
-            RongIMClient.registerMessageType(HandOverHostMessage.class);
-            RongIMClient.registerMessageType(TakeOverHostMessage.class);
-        } catch (AnnotationNotFoundException e) {
-            e.printStackTrace();
-        }
+        RongIMClient.registerMessageType(RoomMemberChangedMessage.class);
+        RongIMClient.registerMessageType(SendGiftMessage.class);
+        RongIMClient.registerMessageType(SendBroadcastGiftMessage.class);
+        RongIMClient.registerMessageType(KickMemberMessage.class);
+        RongIMClient.registerMessageType(HandOverHostMessage.class);
+        RongIMClient.registerMessageType(TakeOverHostMessage.class);
 
         //管理消息监听，由于同一时间只能有一个消息监听加入 融云 的消息监听，所以做一个消息管理来做消息路由
         RongIMClient.setOnReceiveMessageListener(new RongIMClient.OnReceiveMessageListener() {
@@ -222,19 +219,20 @@ public class IMClient {
         RongIMClient.getInstance().joinChatRoom(roomId, DEFAULT_MESSAGE_COUNT, new RongIMClient.OperationCallback() {
             @Override
             public void onSuccess() {
-                if (callBack != null) {
-                    getChatRoomInfo(roomId, new RongIMClient.ResultCallback<ChatRoomInfo>() {
-                        @Override
-                        public void onSuccess(ChatRoomInfo chatRoomInfo) {
+                getChatRoomInfo(roomId, new RongIMClient.ResultCallback<ChatRoomInfo>() {
+                    @Override
+                    public void onSuccess(ChatRoomInfo chatRoomInfo) {
+                        if (callBack != null) {
                             callBack.onSuccess(roomId);
                         }
+                    }
 
-                        @Override
-                        public void onError(RongIMClient.ErrorCode errorCode) {
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
 
-                        }
-                    });
-                }
+                    }
+                });
+
             }
 
             @Override
@@ -380,15 +378,15 @@ public class IMClient {
     }
 
     public void setChatRoomSpeakEntry(String roomId, String key, final String value) {
-        RongIMClient.getInstance().setChatRoomEntry(roomId, key, value, true, false, "", new RongIMClient.OperationCallback() {
+        RongIMClient.getInstance().forceSetChatRoomEntry(roomId, key, value, true, false, "", new RongIMClient.OperationCallback() {
             @Override
             public void onSuccess() {
-                Log.i("TAG", "存speak" + value);
+                Log.i("TAG-setChatRoomSpeak", "存speak-success" + value);
             }
 
             @Override
             public void onError(RongIMClient.ErrorCode errorCode) {
-                Log.i("TAG", "存speak" + errorCode);
+                Log.i("TAG-setChatRoomSpeak", "存speak-error-code：" + errorCode);
             }
         });
     }

@@ -134,15 +134,23 @@ public class RTCClient {
 
                     /**
                      * 以 HashMap 形式返回参与者的 userID 和 audiolevel ，每秒钟刷新一次。当 AudioLevel 大于 0 时，即认为该用户正在讲话
+                     * 本端接收对端说话状态
                      */
                     @Override
                     public void onAudioReceivedLevel(HashMap<String, String> audioLevel) {
                         super.onAudioReceivedLevel(audioLevel);
+                        EventBus.getDefault().post(new Event.EventRemoteAudioChange(audioLevel));
                     }
 
+                    /**
+                     * 本端说话状态
+                     * @param audioLevel 声音值
+                     */
                     @Override
                     public void onAudioInputLevel(String audioLevel) {
                         super.onAudioInputLevel(audioLevel);
+
+                        EventBus.getDefault().post(new Event.EventLocalAudioChange(audioLevel));
 
                         String roomId = CacheManager.getInstance().getRoomId();
 
@@ -185,7 +193,7 @@ public class RTCClient {
                         lastSpeakingLevel = levelValue;
 
                         IMClient.getInstance().setChatRoomSpeakEntry(roomId, SPEAKING + position, value);
-                        EventBus.getDefault().post(new Event.EventAudioInputLevel(position, levelValue));
+//                        EventBus.getDefault().post(new Event.EventAudioInputLevel(position, levelValue));
                     }
                 });
 

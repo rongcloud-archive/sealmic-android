@@ -40,14 +40,14 @@ android {
 
     }
 
-//    signingConfigs {
-//        config {
-//            storeFile file('sealmic-keystore.key')
-//            storePassword Store_password
-//            keyAlias Key_alias
-//            keyPassword Key_password
-//        }
-//    }
+    signingConfigs {
+        config {
+            storeFile file('sealmic-keystore.key')
+            storePassword Store_password
+            keyAlias Key_alias
+            keyPassword Key_password
+        }
+    }
 
     android.applicationVariants.all {
         variant ->
@@ -57,14 +57,19 @@ android {
             }
     }
 
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
+        jni.srcDirs = []
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-//        debug {
-//            signingConfig signingConfigs.config
-//        }
+        debug {
+            signingConfig signingConfigs.config
+        }
     }
 
 }
@@ -101,7 +106,8 @@ dependencies {
 
     //融云
     implementation project(':IMKit_Source')
-    implementation 'cn.rongcloud.sdk:rtc_lib:4.0.3.2'
+    // 音视频基础能力库
+//    implementation 'cn.rongcloud.sdk:rtc_lib:4.0.4'
 
     //事件总线
     implementation 'org.greenrobot:eventbus:3.0.0'

@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.slice.Slice;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,10 +33,12 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.rongcloud.rtc.api.report.StatusBean;
 import cn.rongcloud.rtc.api.report.StatusReport;
@@ -112,7 +113,6 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.ChatRoomInfo;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
-import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.ChatRoomKVNotiMessage;
 import io.rong.message.RecallNotificationMessage;
@@ -123,8 +123,13 @@ import io.rong.message.TextMessage;
  */
 public class ChatRoomFragment extends Fragment {
 
-    public static final String TAG = ChatRoomFragment.class.getSimpleName();
-    private static boolean isSpeak = false;
+    private static final String TAG = ChatRoomFragment.class.getSimpleName();
+
+    /**
+     * 说话的等级，用此来判断是否正在说话
+     */
+    private int inputLevel;
+
     /**
      * 软键盘是否显示
      */
@@ -310,47 +315,46 @@ public class ChatRoomFragment extends Fragment {
         EventBus.getDefault().post(new Event.EventUserLineStatusChange.MicUserFilterBankAndMic(memberBeanList));
     }
 
-    /**
-     * 主持人的正在说话
-     *
-     * @param eventAudioInputLevel
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventAudioInputLevel(Event.EventAudioInputLevel eventAudioInputLevel) {
-        int position = eventAudioInputLevel.getPosition();
-        int inputLevel = eventAudioInputLevel.getInputLevel();
-        // > 0表示正在讲话
-        if (inputLevel > 0) {
-            //判断该麦位是否有人，防止在房间内意外退出，再次进来后麦位说话图标错位
-            MicBean micBean = localMicBeanMap.get(position);
-            if (micBean == null || micBean.getUserId().isEmpty() ||
-                    micBean.getState() == MicState.LOCK.getState() ||
-                    micBean.getState() == MicState.CLOSE.getState()) {
-                return;
-            }
-            dynamicAvatarViewList.get(position).startSpeak();
-        } else {
-            dynamicAvatarViewList.get(position).stopSpeak();
-        }
-    }
+//    /**
+//     * 主持人的正在说话
+//     *
+//     * @param eventAudioInputLevel
+//     */
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEventAudioInputLevel(Event.EventAudioInputLevel eventAudioInputLevel) {
+//        int position = eventAudioInputLevel.getPosition();
+//        inputLevel = eventAudioInputLevel.getInputLevel();
+//        // > 0表示正在讲话
+//        SLog.e("AudioInput", "当前麦位" + position + "是否正在讲话:" + (inputLevel > 0));
+//        if (inputLevel > 0) {
+//            //判断该麦位是否有人，防止在房间内意外退出，再次进来后麦位说话图标错位
+//            MicBean micBean = localMicBeanMap.get(position);
+//            if (micBean == null || micBean.getUserId().isEmpty() ||
+//                    micBean.getState() == MicState.LOCK.getState() ||
+//                    micBean.getState() == MicState.CLOSE.getState()) {
+////                dynamicAvatarViewList.get(position).stopSpeak();
+//            } else {
+////                dynamicAvatarViewList.get(position).startSpeak();
+//            }
+//        } else {
+////            dynamicAvatarViewList.get(position).stopSpeak();
+//        }
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventKvList(Event.EventKvMessage eventKvMessage) {
+        //如果当前自己的身份时观众则执行这里逻辑，非观众执行RTC的回调逻辑
+        if (CacheManager.getInstance().getUserRoleType() != UserRoleType.AUDIENCE.getValue()) {
+            return;
+        }
         String key = eventKvMessage.getChatRoomKVNotiMessage().getKey();
         int po = Integer.parseInt(key.substring(key.lastIndexOf("_") + 1));
         final SpeakBean speakBean = gson.fromJson(eventKvMessage.getChatRoomKVNotiMessage().getValue(), SpeakBean.class);
         Log.e(SLog.TAG_SEAL_MIC, speakBean.getPosition() + "speak" + speakBean.getSpeaking());
+
         if (speakBean.getSpeaking() > 0) {
-            if (isSpeak) {
-                return;
-            }
-            isSpeak = true;
             dynamicAvatarViewList.get(po).startSpeak();
         } else {
-            if (!isSpeak) {
-                return;
-            }
-            isSpeak = false;
             dynamicAvatarViewList.get(po).stopSpeak();
         }
     }
@@ -396,6 +400,11 @@ public class ChatRoomFragment extends Fragment {
         roomChatMessageListAdapter.removeMessage(recallNtfMessage.getMessageId());
     }
 
+    /**
+     * 当麦位状态改变通知
+     *
+     * @param eventMicKVMessage
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMicKVMessage(Event.EventMicKVMessage eventMicKVMessage) {
         ChatRoomKVNotiMessage chatRoomKVNotiMessage = eventMicKVMessage.getChatRoomKVNotiMessage();
@@ -423,7 +432,12 @@ public class ChatRoomFragment extends Fragment {
             //此次 KV 消息所携带的最新的麦位信息
             newMicBean = new Gson().fromJson(json, MicBean.class);
             //更新kv时本地更新麦位map
-            localMicBeanMap.put(newMicBean.getPosition(), newMicBean);
+            //并且针对hashMap中的K和V进行去重
+            if (localMicBeanMap.containsKey(newMicBean.getPosition())) {
+                if (!newMicBean.getUserId().equals(userId)) {
+                    localMicBeanMap.put(newMicBean.getPosition(), newMicBean);
+                }
+            }
             if (newMicBean != null) {
                 //1. 根据新返回来的KV更新UI
                 if (newMicBean.getState() == MicState.NORMAL.getState() || newMicBean.getState() == MicState.CLOSE.getState()) {
@@ -476,11 +490,10 @@ public class ChatRoomFragment extends Fragment {
                 } else if (newMicBean.getState() == MicState.LOCK.getState()) {
                     //麦位锁定
                     dynamicAvatarViewList.get(newMicBean.getPosition()).lockMic();
-                }
-//                else if (newMicBean.getState() == MicState.CLOSE.getState()) {
+                } else if (newMicBean.getState() == MicState.CLOSE.getState()) {
 //                    闭麦
-//                    dynamicAvatarViewList.get(newMicBean.getPosition()).bankMic();
-//            }
+                    dynamicAvatarViewList.get(newMicBean.getPosition()).bankMic();
+                }
 
                 //2. 被点的人是自己
                 if (newMicBean.getUserId().equals(userId)) {
@@ -547,14 +560,13 @@ public class ChatRoomFragment extends Fragment {
                     localMicBeanMap.put(newMicBean.getPosition(), newMicBean);
 
                 } else {
-
                     //如果 changeType 不是 （4，5，6）中的一种并且当前用户的麦位信息存在（也就是当前用户在麦位上）并且新麦位的序号等于当前用户时
                     int changeType = kvExtraBean.getChangeType();
                     //456 4种情况为不用下麦的情况
                     if (changeType != 4
                             && changeType != 5
                             && changeType != 6
-                            && !currentMicBean.getUserId().isEmpty()
+                            && currentMicBean != null
                             && currentMicBean.getPosition() == newMicBean.getPosition()) {
                         //主播下麦
                         chatRoomViewModel.switchMic(roomId,
@@ -578,7 +590,7 @@ public class ChatRoomFragment extends Fragment {
 
                                     @Override
                                     public void onFail(int errorCode) {
-
+                                        SLog.e(SLog.TAG_SEAL_MIC, "主播下麦失败 " + errorCode);
                                     }
                                 });
 
@@ -608,11 +620,11 @@ public class ChatRoomFragment extends Fragment {
             newSpeakBean = new Gson().fromJson(json, SpeakBean.class);
             CustomDynamicAvatar customDynamicAvatar = dynamicAvatarViewList.get(newSpeakBean.getPosition());
             //1: 正在说话  0: 没有说话
-            if (newSpeakBean.getSpeaking() == 1) {
-                customDynamicAvatar.startSpeak();
-            } else {
-                customDynamicAvatar.stopSpeak();
-            }
+//            if (newSpeakBean.getSpeaking() == 1 && inputLevel > 0) {
+//                customDynamicAvatar.startSpeak();
+//            } else {
+//                customDynamicAvatar.stopSpeak();
+//            }
 
             //本地用户靠音量是否大于1来判断是否显示动画
 
@@ -1140,9 +1152,67 @@ public class ChatRoomFragment extends Fragment {
         debugInfoAdapter.setStatusBeanList(statusBeans);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(Event.EventAudioReceivedLevel eventAudioReceivedLevel) {
-        HashMap<String, String> audioLevel = eventAudioReceivedLevel.getAudioLevel();
+    /**
+     * 麦上的人说话（除了自己外，只有自己在麦位上-即自己加入了rtc房间，此方法才会回调）
+     * 启用异步执行，同时处理多个事件
+     *
+     * @param eventRemoteAudioChange
+     */
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEventRemoteAudioChange(Event.EventRemoteAudioChange eventRemoteAudioChange) {
+        final HashMap<String, String> audioLevel = eventRemoteAudioChange.getSpeakerMap();
+        if (audioLevel != null && audioLevel.size() > 0) {
+            try {
+                ThreadManager.getInstance().runOnWorkThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Collection<MicBean> values = localMicBeanMap.values();
+                        for (MicBean next : values) {
+                            if (next == null || next.getUserId() == null || next.getUserId().isEmpty()) {
+                                continue;
+                            }
+                            if (audioLevel.containsKey(next.getUserId())) {
+                                int anInt = Integer.parseInt(audioLevel.get(next.getUserId()));
+                                //内部自动转主线程更新UI
+                                if (anInt > 0) {
+                                    SLog.i(SLog.TAG_SEAL_MIC_AUDIO, "第 " + next.getPosition() + " 号麦位正在讲话");
+                                    dynamicAvatarViewList.get(next.getPosition()).startSpeak();
+                                } else {
+                                    dynamicAvatarViewList.get(next.getPosition()).stopSpeak();
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 自己的说话状态，直接子线程执行即可，无需异步（只有自己在麦位上-即自己加入了rtc房间，此方法才会回调）
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onEventLocalAudioChange(Event.EventLocalAudioChange eventLocalAudioChange) {
+        try {
+            if (eventLocalAudioChange != null) {
+
+                Collection<MicBean> values = localMicBeanMap.values();
+                for (MicBean next : values) {
+                    if (next.getUserId().equals(CacheManager.getInstance().getUserId())) {
+                        int anInt = Integer.parseInt(eventLocalAudioChange.getAudioLevel());
+                        if (anInt > 0) {
+                            dynamicAvatarViewList.get(next.getPosition()).startSpeak();
+                        } else {
+                            dynamicAvatarViewList.get(next.getPosition()).stopSpeak();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1269,11 +1339,11 @@ public class ChatRoomFragment extends Fragment {
                     ThreadManager.getInstance().runOnUIThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (1 == speakBean.getSpeaking()) {
-                                dynamicAvatarViewList.get(speakBean.getPosition()).startSpeak();
-                            } else {
-                                dynamicAvatarViewList.get(speakBean.getPosition()).stopSpeak();
-                            }
+//                            if (1 == speakBean.getSpeaking()) {
+//                                dynamicAvatarViewList.get(speakBean.getPosition()).startSpeak();
+//                            } else {
+//                                dynamicAvatarViewList.get(speakBean.getPosition()).stopSpeak();
+//                            }
                         }
                     });
 
@@ -1283,7 +1353,7 @@ public class ChatRoomFragment extends Fragment {
             @Override
             public void onError(RongIMClient.ErrorCode errorCode) {
                 SLog.e(SLog.TAG_SEAL_MIC, "获取正在讲话的KV信息失败，错误码为: " + errorCode);
-                ToastUtil.showToast("获取正在讲话的KV信息失败，错误码为: " + errorCode);
+//                ToastUtil.showToast("获取正在讲话的KV信息失败，错误码为: " + errorCode);
                 NavOptionsRouterManager.getInstance().backUp(getView());
             }
         });
@@ -1310,7 +1380,7 @@ public class ChatRoomFragment extends Fragment {
                                 @Override
                                 public void onChanged(NetResult<List<RoomMemberRepo.MemberBean>> listNetResult) {
                                     if (listNetResult != null && listNetResult.getData().size() != 0) {
-                                        dynamicAvatarViewList.get(micBean.getPosition()).stopSpeak();
+//                                        dynamicAvatarViewList.get(micBean.getPosition()).stopSpeak();
                                         GlideManager.getInstance().setUrlImage(fragmentChatRoomBinding.getRoot(),
                                                 listNetResult.getData().get(0).getPortrait(),
                                                 dynamicAvatarViewList.get(micBean.getPosition()).getUserImg());
@@ -1376,7 +1446,7 @@ public class ChatRoomFragment extends Fragment {
             @Override
             public void onError(RongIMClient.ErrorCode errorCode) {
                 SLog.e(SLog.TAG_SEAL_MIC, "获取全部麦位的KV信息失败，错误码为: " + errorCode);
-                ToastUtil.showToast("获取全部麦位的KV信息失败，错误码为: " + errorCode);
+//                ToastUtil.showToast("获取全部麦位的KV信息失败，错误码为: " + errorCode);
                 NavOptionsRouterManager.getInstance().backUp(getView());
             }
         });
@@ -1384,36 +1454,40 @@ public class ChatRoomFragment extends Fragment {
 
 
     public void clickMic(final int position) {
-        //获取点击的麦位信息
-        MicBean clickMicBean = localMicBeanMap.get(position);
-        if (clickMicBean != null) {
-            if (TextUtils.isEmpty(clickMicBean.getUserId())) {
-                //空麦位
-                if (UserRoleType.HOST.getValue() == CacheManager.getInstance().getUserRoleType()) {
-                    //主持人
-                    micAbsentHost(clickMicBean);
-                } else if (UserRoleType.CONNECT_MIC.getValue() == CacheManager.getInstance().getUserRoleType()) {
-                    //连麦者
-                    micAbsentConnect(clickMicBean);
-                } else if (UserRoleType.AUDIENCE.getValue() == CacheManager.getInstance().getUserRoleType()) {
-                    //观众
-                    micAbsentAudience(clickMicBean);
+        try {
+            //获取点击的麦位信息
+            MicBean clickMicBean = localMicBeanMap.get(position);
+            if (clickMicBean != null) {
+                if (TextUtils.isEmpty(clickMicBean.getUserId())) {
+                    //空麦位
+                    if (UserRoleType.HOST.getValue() == CacheManager.getInstance().getUserRoleType()) {
+                        //主持人
+                        micAbsentHost(clickMicBean);
+                    } else if (UserRoleType.CONNECT_MIC.getValue() == CacheManager.getInstance().getUserRoleType()) {
+                        //连麦者
+                        micAbsentConnect(clickMicBean);
+                    } else if (UserRoleType.AUDIENCE.getValue() == CacheManager.getInstance().getUserRoleType()) {
+                        //观众
+                        micAbsentAudience(clickMicBean);
+                    }
+                } else {
+                    //麦位上有人
+                    if (UserRoleType.HOST.getValue() == CacheManager.getInstance().getUserRoleType()) {
+                        //主持人
+                        micPresentHost(clickMicBean);
+                    } else if (UserRoleType.CONNECT_MIC.getValue() == CacheManager.getInstance().getUserRoleType()) {
+                        //连麦者
+                        micPresentConnect(clickMicBean);
+                    } else if (UserRoleType.AUDIENCE.getValue() == CacheManager.getInstance().getUserRoleType()) {
+                        //观众
+                        micPresentAudience(clickMicBean);
+                    }
                 }
             } else {
-                //麦位上有人
-                if (UserRoleType.HOST.getValue() == CacheManager.getInstance().getUserRoleType()) {
-                    //主持人
-                    micPresentHost(clickMicBean);
-                } else if (UserRoleType.CONNECT_MIC.getValue() == CacheManager.getInstance().getUserRoleType()) {
-                    //连麦者
-                    micPresentConnect(clickMicBean);
-                } else if (UserRoleType.AUDIENCE.getValue() == CacheManager.getInstance().getUserRoleType()) {
-                    //观众
-                    micPresentAudience(clickMicBean);
-                }
+                SLog.e(SLog.TAG_SEAL_MIC, "点的麦位MicBean为Null");
             }
-        } else {
-            SLog.e(SLog.TAG_SEAL_MIC, "点的麦位MicBean为Null");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

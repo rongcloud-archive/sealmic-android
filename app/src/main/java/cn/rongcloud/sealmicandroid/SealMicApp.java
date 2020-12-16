@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -211,6 +212,10 @@ public class SealMicApp extends MultiDexApplication {
 
     public void connectIM() {
         String token = CacheManager.getInstance().getToken();
+        if (token.isEmpty()) {
+            EventBus.getDefault().postSticky(new Event.UserTokenLose());
+            return;
+        }
         SLog.i(SLog.TAG_SEAL_MIC, "token: " + token);
         IMClient.getInstance().connect(token, new RongIMClient.ConnectCallback() {
             @Override

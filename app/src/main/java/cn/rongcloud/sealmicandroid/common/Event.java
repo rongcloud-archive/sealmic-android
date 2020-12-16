@@ -2,6 +2,7 @@ package cn.rongcloud.sealmicandroid.common;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.rongcloud.rtc.api.report.StatusReport;
 import cn.rongcloud.sealmicandroid.bean.kv.MicBean;
@@ -32,6 +33,36 @@ public class Event {
 
         public EventImList(Message message) {
             this.message = message;
+        }
+    }
+
+    /**
+     * 对端说话回调
+     */
+    public static class EventRemoteAudioChange {
+        private HashMap<String, String> speakerMap;
+
+        public EventRemoteAudioChange(HashMap<String, String> speakerMap) {
+            this.speakerMap = speakerMap;
+        }
+
+        public HashMap<String, String> getSpeakerMap() {
+            return speakerMap;
+        }
+    }
+
+    /**
+     * 本端说话回调
+     */
+    public static class EventLocalAudioChange {
+        private String audioLevel;
+
+        public EventLocalAudioChange(String audioLevel) {
+            this.audioLevel = audioLevel;
+        }
+
+        public String getAudioLevel() {
+            return audioLevel;
         }
     }
 
@@ -73,7 +104,7 @@ public class Event {
     }
 
     /**
-     * 聊天界面消息列表数据更新事件
+     * 界面消息列表数据更新事件（讲话状态）
      */
     public static class EventKvMessage {
         private ChatRoomKVNotiMessage chatRoomKVNotiMessage;

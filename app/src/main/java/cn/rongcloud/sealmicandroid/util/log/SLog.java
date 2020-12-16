@@ -5,6 +5,8 @@ import android.content.Context;
 public class SLog {
     public static final String TAG_SEAL_MIC = "SealMic";
 
+    public static final String TAG_SEAL_MIC_AUDIO = "SealMicAudio";
+
     public static final String TAG_NET = "SealMicNet";
 
     public static final String TAG_TASK = "SealMicTask";

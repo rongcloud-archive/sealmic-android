@@ -97,7 +97,7 @@ public class ChatRoomRefreshAdapter extends RecyclerView.Adapter<ChatRoomRefresh
         holder.getBinding().chatroomlistIvPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemOnClickListener.onClick(view, rooms.get(i));
+                itemOnClickListener.onClick(view, rooms.get(i), i);
             }
         });
         holder.getBinding().executePendingBindings();

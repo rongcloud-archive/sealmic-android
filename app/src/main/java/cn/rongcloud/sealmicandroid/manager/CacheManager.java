@@ -1,5 +1,8 @@
 package cn.rongcloud.sealmicandroid.manager;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import cn.rongcloud.sealmicandroid.SealMicApp;
 import cn.rongcloud.sealmicandroid.bean.kv.MicBean;
 import cn.rongcloud.sealmicandroid.bean.local.BgmBean;
@@ -12,12 +15,15 @@ import cn.rongcloud.sealmicandroid.util.SPUtil;
  */
 public class CacheManager {
 
+    public static final int REQUEST_CODE_PERMISSION = 104;
+    private static final String DEBUG_MODE = "debug_mode";
     private static final String IM_TOKEN = "im_token";
     private static final String AUTH = "auth";
     private static final String USER_ID = "user_id";
     private static final String USER_NAME = "user_name";
     private static final String USER_PORTRAIT = "user_portrait";
     private static final String DEVICE_ID = "device_id";
+    private static final String ROOM_ID_LAST_CREATE = "room_id_last_create";
     private static final String ROOM_ID = "room_id";
     private static final String USER_TYPE = "user_type";
     private static final String USER_ROLE_TYPE = "user_role_type";
@@ -39,6 +45,7 @@ public class CacheManager {
     private static final String BGM_ROOM_ID = "bgm_room_id";
     private static final String BGM_CONTENT = "bgm_content";
 
+    private static final String MAIN_LIST_POSITION = "main_list_position";
     private static final String IS_OPEN_DEBUG = "is_open_debug";
     private static final String IS_CONNECT_IM = "is_connect_im";
 
@@ -51,6 +58,14 @@ public class CacheManager {
 
     public static CacheManager getInstance() {
         return CacheManagerHelper.INSTANCE;
+    }
+
+    public SharedPreferences getSharedPreferencesFile(){
+        return SealMicApp.getApplication().getSharedPreferences(SPUtil.FILE_NAME, Context.MODE_PRIVATE);
+    }
+
+    public void cacheDebugMode(boolean isDebug){
+        SPUtil.put(SealMicApp.getApplication(), DEBUG_MODE, isDebug);
     }
 
     public void cacheToken(String imToken) {
@@ -91,6 +106,14 @@ public class CacheManager {
 
     public String getRoomId() {
         return (String) SPUtil.get(SealMicApp.getApplication(), ROOM_ID, "");
+    }
+
+    public void cacheLastCreateRoomId(String id) {
+        SPUtil.put(SealMicApp.getApplication(), ROOM_ID_LAST_CREATE, id);
+    }
+
+    public String getLastCreateRoomId() {
+        return (String) SPUtil.get(SealMicApp.getApplication(), ROOM_ID_LAST_CREATE, "");
     }
 
     public String getUserId() {
@@ -166,6 +189,10 @@ public class CacheManager {
 
     public void cacheIsLogin(Boolean isLogin) {
         SPUtil.put(SealMicApp.getApplication(), IS_LOGIN, isLogin);
+    }
+
+    public Boolean getDebugMode(){
+        return (Boolean) SPUtil.get(SealMicApp.getApplication(), DEBUG_MODE, false);
     }
 
     public Boolean getIsLogin() {

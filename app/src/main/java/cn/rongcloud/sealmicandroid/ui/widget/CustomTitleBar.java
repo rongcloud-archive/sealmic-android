@@ -20,7 +20,7 @@ import cn.rongcloud.sealmicandroid.manager.GlideManager;
 import cn.rongcloud.sealmicandroid.util.BitmapUtil;
 import cn.rongcloud.sealmicandroid.util.DisplayUtil;
 
-public class CustomTitleBar extends RelativeLayout implements View.OnClickListener {
+public class CustomTitleBar extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener {
 
 
     private String leftTitle;
@@ -69,6 +69,7 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
         tvLeft.setOnClickListener(this);
         tvMiddle = findViewById(R.id.tvMiddleTitle);
         tvMiddle.setOnClickListener(this);
+        tvMiddle.setOnLongClickListener(this);
         tvRight = findViewById(R.id.tvRightTitle);
         tvRight.setOnClickListener(this);
         ivRight = findViewById(R.id.ivRight);
@@ -263,10 +264,17 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
         }
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if (listener != null) {
+            listener.onTitleLongClick();
+        }
+        return true;
+    }
+
     public void setTitleClickListener(TitleClickListener listener) {
         this.listener = listener;
     }
-
 
     public interface TitleClickListener {
 
@@ -279,6 +287,11 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
          * 点击右边区域
          */
         void onRightClick();
+
+        /**
+         * 长按标题区域
+         */
+        void onTitleLongClick();
 
 //        void onRightButton1Click();
 //

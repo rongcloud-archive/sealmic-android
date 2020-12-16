@@ -6,6 +6,14 @@ package cn.rongcloud.sealmicandroid.common.constant;
 public enum MainLoadData {
 
     /**
+     * 被动触发，即执行逻辑时触发，进入页面时加载触发
+     */
+    LOAD_DATA(98),
+    /**
+     * 被动触发，即执行逻辑时触发，直接定位到我新创建的房间
+     */
+    LOCATE_CREATE(99),
+    /**
      * 下拉刷新
      */
     PULL_REFRESH(100),

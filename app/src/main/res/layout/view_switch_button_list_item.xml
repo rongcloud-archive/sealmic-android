@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:text="TextView"
-        android:textColor="@color/color_262626t"
+        android:textColor="@color/color_262626"
         android:textSize="16sp" />
 
     <cn.rongcloud.sealmicandroid.ui.widget.SwitchButton

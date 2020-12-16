@@ -8,5 +8,6 @@
     <dimen name="dimen_79">79dp</dimen>
     <dimen name="dimen_3">3dp</dimen>
     <dimen name="dimen_1">1dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
 
 </resources>

@@ -13,8 +13,9 @@ public interface RoomListItemOnClickListener {
      * 点击
      *
      * @param roomsBean 房间信息
+     * @param position  当前列表索引
      */
-    void onClick(View view, RoomListRepo.RoomsBean roomsBean);
+    void onClick(View view, RoomListRepo.RoomsBean roomsBean, int position);
 
     /**
      * 点击创建房间

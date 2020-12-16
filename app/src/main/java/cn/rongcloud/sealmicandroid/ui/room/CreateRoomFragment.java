@@ -113,6 +113,11 @@ public class CreateRoomFragment extends Fragment {
             public void onRightClick() {
 
             }
+
+            @Override
+            public void onTitleLongClick() {
+
+            }
         });
         fragmentCreateRoomBinding.createRoomTitle.setLeftImage(R.mipmap.ic_back_black);
         fragmentCreateRoomBinding.createRoomTitle.setLeftTitle(getString(R.string.open_new_room_null));

@@ -60,6 +60,7 @@ public class CreateRoomViewModel extends ViewModel {
                     String roomTheme = createRoomRepo.getThemePictureUrl();
                     //缓存房间ID
                     CacheManager.getInstance().cacheRoomId(roomId);
+                    CacheManager.getInstance().cacheLastCreateRoomId(roomId);
                     //创建完房间之后进入房间，此时人物的角色一定为主持人
                     NavOptionsRouterManager.getInstance()
                             .gotoChatRoomFragmentAndBackStack(view,

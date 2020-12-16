@@ -15,25 +15,32 @@
         tools:replace="label"
         tools:targetApi="m">
         <activity
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".common.service.RTCNotificationService" />
+        <activity
+            android:name=".DebugActivity"
+            android:launchMode="singleTop" />
 
         <meta-data
             android:name="design_width_in_dp"
             android:value="380" />
+
         <meta-data
             android:name="design_height_in_dp"
             android:value="580" />
-        <!-- 适配全面屏底黑边，此值建议在2.1或者更大 -->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />
+        <!-- 适配全面屏底黑边，此值建议在2.1或者更大 -->
+        <service android:name=".common.service.RTCNotificationService" />
     </application>
 
     <!-- 音视频需要网络权限 和 监听网络状态权限 -->
@@ -50,7 +57,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_LOGS"
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
 
 </manifest>

@@ -11,7 +11,7 @@
     <color name="color_2df3c1">#2df3c1</color>
     <color name="color_8b879a">#8b879a</color>
     <color name="color_afafaf">#afafaf</color>
-    <color name="color_262626t">#262626</color>
+    <color name="color_262626">#262626</color>
     <color name="color_dfdfdf">#DFDFDD</color>
     <color name="color_cdcdcd">#cdcdcd</color>
     <color name="blink_black">#000000</color>
@@ -36,6 +36,9 @@
     <color name="blink_rad">#ffff0000</color>
     <color name="color_cfcfcf">#CFCFCF</color>
     <color name="color_7b8fa5">#7b8fa5</color>
+    <color name="color_353535">#353535</color>
+    <color name="color_e5e5e5">#e5e5e5</color>
+    <color name="color_3A91F3">#3A91F3</color>
     <color name="white">#fff</color>
 
     <color name="color_e4e4e7">#e4e4e7</color>

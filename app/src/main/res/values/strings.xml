@@ -17,6 +17,7 @@
     <string name="online_number">在线 %s </string>
     <string name="delay_ms">%s ms</string>
     <string name="negative">确定</string>
+    <string name="cancel">取消</string>
     <string name="object_name">RCMic:gift</string>
 
     <string name="room_list">房间列表</string>
@@ -133,6 +134,16 @@
     <string name="invalid_url">无效的下载链接</string>
     <string name="current_version">当前版本： %s</string>
     <string name="join_room_success">加入了房间</string>
+
+    <string name="about_opening_debug">是否需要开启 App Debug 模式?</string>
+    <string name="about_opened_debug">开启 App Debug 模式</string>
+    <string name="about_closing_debug">是否需要关闭 App Debug 模式?</string>
+    <string name="about_closed_debug">关闭 App Debug 模式</string>
+    <string name="about_debug_info">调试信息</string>
+    <string name="about_debug_logcat">获取日志信息</string>
+    <string name="about_debug_export_logcat">成功导出日志</string>
+    <string name="about_debug_zip_files">压缩调试文件</string>
+
     <string-array name="dialog_hostsetting">
         <item>闭麦</item>
         <item>下麦</item>

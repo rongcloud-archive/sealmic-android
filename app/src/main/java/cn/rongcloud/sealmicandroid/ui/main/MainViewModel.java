@@ -1,5 +1,6 @@
 package cn.rongcloud.sealmicandroid.ui.main;
 
+import android.content.Intent;
 import android.view.View;
 
 import androidx.lifecycle.ViewModel;
@@ -11,6 +12,8 @@ import cn.rongcloud.sealmicandroid.manager.NavOptionsRouterManager;
  */
 public class MainViewModel extends ViewModel {
 
+    private int position;
+
     public MainViewModel() {
     }
 
@@ -18,4 +21,11 @@ public class MainViewModel extends ViewModel {
         NavOptionsRouterManager.getInstance().gotoLoginFragmentFromMain(view);
     }
 
+    public void setMainListPosition(int position) {
+        this.position = position;
+    }
+
+    public int getMainListPosition() {
+        return position;
+    }
 }

@@ -33,6 +33,8 @@ public enum SealMicErrorMsg {
     HTTP_TRANSFER_EXPIRED(30011, "主持人转让信息已失效"),
     HTTP_GAG_USER_FAILED(30012, "禁言用户失败"),
     HTTP_TAKE_OVER_EXPIRED(30013, "接管主持人信息已失效"),
+    HTTP_SET_MIC_LOCK(30014, "麦位已有用户，不允许进行麦位锁定操作"),
+    HTTP_SET_MIC_CLOSE(30015, "麦位上无用户，不允许进行闭麦操作"),
     VERSION_EXIST(40000, "版本已存在"),
     VERSION_NO_EXIST(40001, "版本不存在"),
     NO_NEW_VERSION(40002, "没有新版本");
@@ -102,6 +104,10 @@ public enum SealMicErrorMsg {
             ToastUtil.showToast(HTTP_GAG_USER_FAILED.message);
         } else if (code == HTTP_TAKE_OVER_EXPIRED.code) {
             ToastUtil.showToast(HTTP_TAKE_OVER_EXPIRED.message);
+        } else if (code == HTTP_SET_MIC_LOCK.code) {
+            ToastUtil.showToast(HTTP_SET_MIC_LOCK.message);
+        } else if (code == HTTP_SET_MIC_CLOSE.code) {
+            ToastUtil.showToast(HTTP_SET_MIC_CLOSE.message);
         } else if (code == VERSION_EXIST.code) {
             ToastUtil.showToast(VERSION_EXIST.message);
         } else if (code == VERSION_NO_EXIST.code) {

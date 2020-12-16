@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import cn.rongcloud.sealmicandroid.R;
+import cn.rongcloud.sealmicandroid.manager.ThreadManager;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -77,72 +78,112 @@ public class CustomDynamicAvatar extends RelativeLayout {
      * 用户下麦
      */
     public void micDelUser() {
-        //停止用户发言
-        stopSpeak();
-        //改变状态
-        unLockMic();
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                //停止用户发言
+                stopSpeak();
+                //改变状态
+                unLockMic();
+            }
+        });
     }
 
     /**
      * 用户上麦
      */
     public void micAddUser() {
-        itemRel.setVisibility(VISIBLE);
-        img.setVisibility(VISIBLE);
-        addUser.setVisibility(GONE);
-        lockImg.setVisibility(GONE);
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                itemRel.setVisibility(VISIBLE);
+                img.setVisibility(VISIBLE);
+                addUser.setVisibility(GONE);
+                lockImg.setVisibility(GONE);
+            }
+        });
+
     }
 
     /**
      * 用户发言
      */
     public void startSpeak() {
-        //改变状态
-        micAddUser();
-        //判断用户头像是否在显示
-        if (itemRel.getVisibility() == VISIBLE) {
-            //执行渐变动画，达到波动效果
-            itembg.setVisibility(VISIBLE);
-            bgInside.startAnimation(externalAnimation);
-            bgExternal.startAnimation(externalAnimation);
-        }
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                //改变状态
+                micAddUser();
+                //判断用户头像是否在显示
+                if (itemRel.getVisibility() == VISIBLE) {
+                    //执行渐变动画，达到波动效果
+                    itembg.setVisibility(VISIBLE);
+                    bgInside.startAnimation(externalAnimation);
+                    bgExternal.startAnimation(externalAnimation);
+                }
+            }
+        });
+
     }
 
     /**
      * 用户停止发言
      */
     public void stopSpeak() {
-        itembg.setVisibility(GONE);
-        externalAnimation.cancel();
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                itembg.setVisibility(GONE);
+                externalAnimation.cancel();
+            }
+        });
     }
 
     /**
      * 闭麦
      */
     public void bankMic() {
-        //判断用户头像是否显示
-        if (itemRel.getVisibility() == VISIBLE) {
-            lockWheet.setVisibility(VISIBLE);
-        }
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                //判断用户头像是否显示
+                if (itemRel.getVisibility() == VISIBLE) {
+                    lockWheet.setVisibility(VISIBLE);
+                }
+            }
+        });
+
     }
 
     /**
      * 关闭闭麦
      */
     public void unBankMic() {
-        lockWheet.setVisibility(GONE);
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                lockWheet.setVisibility(GONE);
+            }
+        });
+
     }
 
     /**
      * 锁麦
      */
     public void lockMic() {
-        //锁麦停止发言，状态改变
-        stopSpeak();
-        lockImg.setVisibility(VISIBLE);
-        addUser.setVisibility(GONE);
-        itemRel.setVisibility(GONE);
-        itembg.setVisibility(GONE);
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                //锁麦停止发言，状态改变
+                stopSpeak();
+                lockImg.setVisibility(VISIBLE);
+                addUser.setVisibility(GONE);
+                itemRel.setVisibility(GONE);
+                itembg.setVisibility(GONE);
+            }
+        });
+
     }
 
 
@@ -150,11 +191,17 @@ public class CustomDynamicAvatar extends RelativeLayout {
      * 解锁麦位
      */
     public void unLockMic() {
-        addUser.setVisibility(VISIBLE);
-        lockImg.setVisibility(GONE);
-        lockWheet.setVisibility(GONE);
-        itemRel.setVisibility(GONE);
-        itembg.setVisibility(GONE);
+        ThreadManager.getInstance().runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                addUser.setVisibility(VISIBLE);
+                lockImg.setVisibility(GONE);
+                lockWheet.setVisibility(GONE);
+                itemRel.setVisibility(GONE);
+                itembg.setVisibility(GONE);
+            }
+        });
+
     }
 
     /**

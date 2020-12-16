@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.rongcloud.rtc.api.RCRTCEngine;
 import cn.rongcloud.rtc.api.callback.IRCRTCResultCallback;
 import cn.rongcloud.rtc.base.RTCErrorCode;
 import cn.rongcloud.sealmicandroid.bean.kv.MicBean;
@@ -148,12 +149,14 @@ public class RoomManager {
                 RTCClient.getInstance().unsubscribeLiveAVStream(liveUrl, new IRCRTCResultCallback() {
                     @Override
                     public void onSuccess() {
+                        RTCClient.getInstance().unInit();
                         //退出IM聊天室
                         IMClient.getInstance().quitChatRoom(roomId, imCallBack);
                     }
 
                     @Override
                     public void onFailed(RTCErrorCode rtcErrorCode) {
+                        RTCClient.getInstance().unInit();
                         SLog.e(SLog.TAG_SEAL_MIC, "观众退出RTC房间失败: " + rtcErrorCode.getValue());
                     }
                 });
@@ -164,13 +167,13 @@ public class RoomManager {
                 SLog.e(SLog.TAG_SEAL_MIC, "观众退出IM房间失败: " + errorCode.getValue());
             }
         });
-        RTCClient.getInstance().unInit();
     }
 
     /**
      * 观众端上麦
      */
     public void audienceGoMic(final String roomId, final SealMicResultCallback<Map<String, String>> callback) {
+        RTCClient.getInstance().init();
         IMClient.getInstance().getChatRoomEntry(roomId, LIVE_URL, new RongIMClient.ResultCallback<Map<String, String>>() {
             @Override
             public void onSuccess(final Map<String, String> stringStringMap) {
@@ -186,21 +189,35 @@ public class RoomManager {
                             //3. 升级为主播后，调用 RongRTCRoom#publishDefaultLiveAVStream 接口来订阅观看。
                             RTCClient.getInstance().micJoinRoom(roomId);
                             SLog.e(SLog.TAG_SEAL_MIC, "观众上麦成功！");
+                            callback.onSuccess(stringStringMap);
                             //上麦工程后角色变为连麦者
 //                            CacheManager.getInstance().cacheUserRoleType(UserRoleType.CONNECT_MIC.getValue());
-                            callback.onSuccess(stringStringMap);
                         }
 
                         @Override
                         public void onFailed(RTCErrorCode rtcErrorCode) {
+                            if (rtcErrorCode == RTCErrorCode.ILLEGALSTATE) {
+                                RTCClient.getInstance().micJoinRoom(roomId);
+                                callback.onSuccess(stringStringMap);
+                            }
                             SLog.e(SLog.TAG_SEAL_MIC, "观众上麦失败: " + rtcErrorCode.getValue());
                         }
                     });
+                } else {
+                    RTCClient.getInstance().micJoinRoom(roomId);
+                    callback.onSuccess(stringStringMap);
                 }
             }
 
             @Override
             public void onError(RongIMClient.ErrorCode errorCode) {
+                if (errorCode.getValue() == 23427) {
+                    RTCClient.getInstance().micJoinRoom(roomId);
+                    //代表成功
+                    callback.onSuccess(null);
+                } else {
+                    callback.onFail(errorCode.getValue());
+                }
                 SLog.e(SLog.TAG_SEAL_MIC, "获取聊天室liveUrl失败: " + errorCode.getValue());
             }
         });
