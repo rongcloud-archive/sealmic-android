@@ -45,6 +45,7 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
     private ImageView ivRight;
 
     private TitleClickListener listener;
+    private ImageView imgBack;
 
     public CustomTitleBar(Context context) {
         this(context, null);
@@ -74,11 +75,14 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
         tvRight.setOnClickListener(this);
         ivRight = findViewById(R.id.ivRight);
         ivRight.setOnClickListener(this);
+        imgBack = findViewById(R.id.bar_back);
 
 
         leftTitle = array.getString(R.styleable.CustomTitleBar_leftTitle);
         middleTitle = array.getString(R.styleable.CustomTitleBar_middleTitle);
         rightTitle = array.getString(R.styleable.CustomTitleBar_rightTitle);
+
+        boolean imgBackIsShow = array.getBoolean(R.styleable.CustomTitleBar_imgBackIsShow, false);
 
         leftTextColor = array.getColor(R.styleable.CustomTitleBar_leftTextColor, Color.BLACK);
         middleTextColor = array.getColor(R.styleable.CustomTitleBar_middleTextColor, Color.BLACK);
@@ -109,6 +113,8 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
             setRightImage(rightImage, rightImage2);
         }
 
+        imgBack.setVisibility(imgBackIsShow ? VISIBLE : GONE);
+
         tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX, leftTextSize);
         tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, rightTextSize);
         tvMiddle.setTextSize(TypedValue.COMPLEX_UNIT_PX, middleTextSize);
@@ -131,6 +137,10 @@ public class CustomTitleBar extends RelativeLayout implements View.OnClickListen
         setLeftTextColor(leftTextColor);
         setMiddleTextColor(middleTextColor);
         setRightTextColor(rightTextColor);
+    }
+
+    public ImageView getImgBack() {
+        return imgBack;
     }
 
     /**

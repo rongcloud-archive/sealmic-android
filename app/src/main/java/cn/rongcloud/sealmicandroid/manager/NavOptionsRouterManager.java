@@ -81,6 +81,14 @@ public class NavOptionsRouterManager {
     }
 
     /**
+     * 跳转至协议界面
+     */
+    public void gotoAgreeFragmentFromLogin(View view) {
+        Bundle bundle = new Bundle();
+        Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_agreeFragment, bundle, getDefaultNavOptions());
+    }
+
+    /**
      * 跳转至创建房间界面
      */
     public void gotoCreateRoomFragment(View view) {

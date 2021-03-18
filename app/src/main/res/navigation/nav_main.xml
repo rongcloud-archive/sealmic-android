@@ -50,9 +50,17 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
+            android:id="@+id/action_loginFragment_to_agreeFragment"
+            app:destination="@id/agreeFragment" />
+        <action
             android:id="@+id/action_loginFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/agreeFragment"
+        android:name="cn.rongcloud.sealmicandroid.ui.agree.AgreeFragment"
+        android:label="AgreeFragment"
+        tools:layout="@layout/fragment_agree" />
     <fragment
         android:id="@+id/createRoomFragment"
         android:name="cn.rongcloud.sealmicandroid.ui.room.CreateRoomFragment"

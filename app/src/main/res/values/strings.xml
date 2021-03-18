@@ -4,13 +4,16 @@
     <string name="goto_chatRoom_fragment">跳转至聊天室</string>
     <string name="goto_login_fragment">跳转至登录页面</string>
     <string name="login_commit">登录</string>
+    <string name="login_versionText">新登录用户即注册开通融云开发者账号</string>
+    <string name="login_versionContent">且表示同意《注册条款》</string>
+    <string name="login_agree">《注册条款》</string>
     <string name="login_success">登录成功</string>
     <string name="get_auth_code">验证码</string>
     <string name="please_input_right_mobile">请输入手机号</string>
     <string name="input_right_mobile_error">手机号错误</string>
     <string name="mobile_or_authcode_notnull">手机号或验证码不能为空</string>
     <string name="please_input_auth_code">请输入验证码</string>
-    <string name="mobile_not_empty">手机号不能为空</string>s
+    <string name="mobile_not_empty">手机号不能为空</string>
     <string name="secs">%s\'s</string>
     <string name="open_new_room">开启新房间</string>
     <string name="open_new_room_null"></string>

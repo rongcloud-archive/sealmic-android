@@ -4,7 +4,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +32,7 @@ import cn.rongcloud.sealmicandroid.common.lifecycle.MainObserver;
 import cn.rongcloud.sealmicandroid.databinding.FragmentLoginBinding;
 import cn.rongcloud.sealmicandroid.manager.NavOptionsRouterManager;
 import cn.rongcloud.sealmicandroid.ui.widget.CustomTitleBar;
+import cn.rongcloud.sealmicandroid.ui.widget.spannable.AgreeClickableSpan;
 import cn.rongcloud.sealmicandroid.util.KeyBoardUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 
@@ -43,6 +48,8 @@ public class LoginFragment extends Fragment {
     private FragmentLoginBinding fragmentLoginBinding;
     //是否在倒计时
     private boolean isCount = false;
+
+    private final String AGREEMENT = "《注册条款》";
 
     public LoginFragment() {
     }
@@ -81,6 +88,25 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        String agreeContent = fragmentLoginBinding.loginAgree.getText().toString();
+        if (agreeContent.contains(AGREEMENT)) {
+            int i = agreeContent.indexOf(AGREEMENT);
+            int endP = i + AGREEMENT.length();
+            SpannableString spannableString = new SpannableString(agreeContent);
+            //设置开头区域背景
+            ForegroundColorSpan colorSpanStart = new ForegroundColorSpan(
+                    ContextCompat.getColor(getContext(), R.color.color_5C6970));
+            spannableString.setSpan(colorSpanStart, 0, i, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            //设置可点击区域背景
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(
+                    ContextCompat.getColor(getContext(), R.color.color_00AAFF));
+            spannableString.setSpan(colorSpan, i, endP, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            //设置点击事件
+            AgreeClickableSpan customClickableSpan = new AgreeClickableSpan(getView());
+            spannableString.setSpan(customClickableSpan, i, endP, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            fragmentLoginBinding.loginAgree.setMovementMethod(LinkMovementMethod.getInstance());
+            fragmentLoginBinding.loginAgree.setText(spannableString);
+        }
         fragmentLoginBinding.loginTopBar.setTvMiddleIsGong();
         fragmentLoginBinding.loginTopBar.setLeftImage(R.mipmap.ic_back_black);
         fragmentLoginBinding.loginTopBar.setLeftTitle(getString(R.string.login_commit));
@@ -158,6 +184,12 @@ public class LoginFragment extends Fragment {
                 }
             }
         });
+//        fragmentLoginBinding.loginAgree.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                NavOptionsRouterManager.getInstance().gotoAgreeFragmentFromLogin(getView());
+//            }
+//        });
     }
 
     private void showButton() {
