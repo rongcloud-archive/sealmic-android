@@ -1,7 +1,6 @@
 package cn.rongcloud.sealmicandroid.ui.room;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import androidx.lifecycle.MutableLiveData;
@@ -9,7 +8,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
-import java.util.Map;
 
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.bean.repo.NetResult;
@@ -124,7 +122,7 @@ public class ChatRoomViewModel extends ViewModel {
      * @param roomId         房间id
      * @param targetRoleType 期望变成的用户角色
      */
-    public void switchMic(final String roomId, final int currentRoleType, final int targetRoleType, SealMicResultCallback<Map<String, String>> callback) {
+    public void switchMic(final String roomId, final int currentRoleType, final int targetRoleType, SealMicResultCallback<String> callback) {
         //以前是连麦者或者是主持人，而现在变成观众，则 需要退出RTC房间，然后重新订阅liveUrl
         //想成为观众
         boolean wantBecameAudience = (targetRoleType == UserRoleType.AUDIENCE.getValue());

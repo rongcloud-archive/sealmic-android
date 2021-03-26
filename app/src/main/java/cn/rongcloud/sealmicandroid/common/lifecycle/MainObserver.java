@@ -6,9 +6,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
-import cn.rongcloud.sealmicandroid.im.IMClient;
-import cn.rongcloud.sealmicandroid.util.KeyBoardUtil;
-
 /**
  * 主界面生命周期监听
  */

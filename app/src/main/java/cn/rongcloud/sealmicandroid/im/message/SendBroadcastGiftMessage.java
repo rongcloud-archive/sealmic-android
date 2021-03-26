@@ -7,10 +7,9 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import cn.rongcloud.sealmicandroid.util.log.SLog;
 import java.io.UnsupportedEncodingException;
 
+import cn.rongcloud.sealmicandroid.util.log.SLog;
 import io.rong.common.ParcelUtils;
 import io.rong.imlib.MessageTag;
 import io.rong.imlib.model.MessageContent;

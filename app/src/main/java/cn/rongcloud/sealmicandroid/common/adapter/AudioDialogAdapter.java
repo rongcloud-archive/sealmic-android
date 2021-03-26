@@ -16,7 +16,6 @@ import cn.rongcloud.sealmicandroid.bean.BgAudioBean;
 import cn.rongcloud.sealmicandroid.bean.local.BgmBean;
 import cn.rongcloud.sealmicandroid.databinding.ItemBgAudioBinding;
 import cn.rongcloud.sealmicandroid.manager.CacheManager;
-import cn.rongcloud.sealmicandroid.manager.RoomManager;
 import cn.rongcloud.sealmicandroid.rtc.RTCClient;
 import cn.rongcloud.sealmicandroid.util.ToastUtil;
 

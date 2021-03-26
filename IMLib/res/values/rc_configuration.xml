@@ -13,7 +13,7 @@
     <!--缩略图压缩宽、高-->
     <integer name="rc_thumb_compress_size">240</integer>
     <!--缩略图压缩最小宽、高-->
-    <integer name="rc_thumb_compress_min_size">100</integer>
+    <integer name="rc_thumb_compress_min_size">240</integer>
 
     <!-- 设置发送输入状态 -->
     <bool name="rc_typing_status">true</bool>

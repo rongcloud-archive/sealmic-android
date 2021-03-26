@@ -2,7 +2,6 @@ package cn.rongcloud.sealmicandroid.rtc;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -10,36 +9,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import cn.rongcloud.rtc.api.RCRTCAudioMixer;
 import cn.rongcloud.rtc.api.RCRTCConfig;
 import cn.rongcloud.rtc.api.RCRTCEngine;
 import cn.rongcloud.rtc.api.RCRTCRemoteUser;
 import cn.rongcloud.rtc.api.RCRTCRoom;
+import cn.rongcloud.rtc.api.RCRTCRoomConfig;
 import cn.rongcloud.rtc.api.callback.IRCRTCResultCallback;
 import cn.rongcloud.rtc.api.callback.IRCRTCResultDataCallback;
 import cn.rongcloud.rtc.api.callback.IRCRTCStatusReportListener;
-import cn.rongcloud.rtc.api.callback.RCRTCLiveCallback;
 import cn.rongcloud.rtc.api.report.StatusBean;
 import cn.rongcloud.rtc.api.report.StatusReport;
-import cn.rongcloud.rtc.api.stream.RCRTCAudioInputStream;
 import cn.rongcloud.rtc.api.stream.RCRTCInputStream;
 import cn.rongcloud.rtc.api.stream.RCRTCLiveInfo;
-import cn.rongcloud.rtc.api.stream.RCRTCVideoInputStream;
-import cn.rongcloud.rtc.base.RCRTCAVStreamType;
+import cn.rongcloud.rtc.api.stream.RCRTCMicOutputStream;
+import cn.rongcloud.rtc.base.RCRTCLiveRole;
+import cn.rongcloud.rtc.base.RCRTCParamsType;
 import cn.rongcloud.rtc.base.RCRTCRoomType;
 import cn.rongcloud.rtc.base.RTCErrorCode;
+import cn.rongcloud.sealmicandroid.BuildConfig;
 import cn.rongcloud.sealmicandroid.SealMicApp;
 import cn.rongcloud.sealmicandroid.common.Event;
 import cn.rongcloud.sealmicandroid.common.adapter.RTCEventsListenerAdapter;
-import cn.rongcloud.sealmicandroid.common.constant.SealMicConstant;
 import cn.rongcloud.sealmicandroid.im.IMClient;
 import cn.rongcloud.sealmicandroid.manager.CacheManager;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
-
-import static cn.rongcloud.sealmicandroid.manager.RoomManager.LIVE_URL;
 
 /**
  * Rong RTC 语音业务封装
@@ -66,6 +61,12 @@ public class RTCClient {
         return RTCClientHelper.INSTANCE;
     }
 
+    public void initMediaServer() {
+        if (BuildConfig.Media_server != null && !BuildConfig.Media_server.isEmpty()) {
+            RCRTCEngine.getInstance().setMediaServerUrl(BuildConfig.Media_server);
+        }
+    }
+
     public void init() {
         RCRTCConfig config = RCRTCConfig.Builder.create()
                 //是否硬解码
@@ -75,6 +76,10 @@ public class RTCClient {
                 .build();
         //使用默认配置，直接传null
         RCRTCEngine.getInstance().init(SealMicApp.getApplication(), config);
+        RCRTCMicOutputStream rcrtcMicOutputStream = RCRTCEngine.getInstance().getDefaultAudioStream();
+        if (rcrtcMicOutputStream != null) {
+            rcrtcMicOutputStream.setAudioQuality(RCRTCParamsType.AudioQuality.MUSIC_HIGH, RCRTCParamsType.AudioScenario.MUSIC_CHATROOM);
+        }
     }
 
     public void unInit() {
@@ -90,8 +95,13 @@ public class RTCClient {
      */
     public void micJoinRoom(final String roomId) {
         //主播端首先调用 RCRTCEngine#joinRoom 接口创建一个直播类型房间
-        RCRTCRoomType rtcRoomType = RCRTCRoomType.LIVE_AUDIO;
-        RCRTCEngine.getInstance().joinRoom(roomId, rtcRoomType, new IRCRTCResultDataCallback<RCRTCRoom>() {
+        RCRTCRoomConfig roomConfig = RCRTCRoomConfig.Builder.create()
+                //以主播的形式进入房间
+                .setLiveRole(RCRTCLiveRole.BROADCASTER)
+                //根据实际场景，选择音视频直播：LIVE_AUDIO_VIDEO 或音频直播：LIVE_AUDIO
+                .setRoomType(RCRTCRoomType.LIVE_AUDIO)
+                .build();
+        RCRTCEngine.getInstance().joinRoom(roomId, roomConfig, new IRCRTCResultDataCallback<RCRTCRoom>() {
             @Override
             public void onSuccess(final RCRTCRoom rcrtcRoom) {
                 //第一步:
@@ -112,7 +122,7 @@ public class RTCClient {
 
                             @Override
                             public void onFailed(RTCErrorCode rtcErrorCode) {
-                                SLog.e(SLog.TAG_SEAL_MIC, "主播订阅远端用户失败");
+                                SLog.e(SLog.TAG_SEAL_MIC, "主播订阅远端用户失败: " + rtcErrorCode.toString());
                             }
                         });
                     }
@@ -206,20 +216,21 @@ public class RTCClient {
                         //音视频资源发布成功后会返回一个 RCRTCLiveInfo 对象，
                         //对象中包含了 RoomId、直播地址( liveUrl )等信息，
                         //将以上信息上传到自己的 APPServer，至此主播已创建好一个直播间等待观众端的加入
-                        //本地存一份KV
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                IMClient.getInstance().setChatRoomEntry(rongRTCLiveInfo.getRoomId(),
-                                        LIVE_URL,
-                                        rongRTCLiveInfo.getLiveUrl());
-                            }
-                        }, SealMicConstant.DELAY_KV);
+//                        new Timer().schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                SLog.e(SLog.TAG_SEAL_MIC, "主播加入房间后发布音频流资源成功");
+//                                IMClient.getInstance().setChatRoomEntry(rongRTCLiveInfo.getRoomId(),
+//                                        LIVE_URL,
+//                                        rongRTCLiveInfo.getLiveUrl());
+//                            }
+//                        }, SealMicConstant.DELAY_KV);
+                        SLog.e(SLog.TAG_SEAL_MIC, "主播加入房间后发布音频流资源成功");
                     }
 
                     @Override
                     public void onFailed(RTCErrorCode rtcErrorCode) {
-                        SLog.e(SLog.TAG_SEAL_MIC, "主播加入RTC房间之后发布流失败: " + rtcErrorCode.getReason());
+                        SLog.e(SLog.TAG_SEAL_MIC, "主播加入RTC房间之后发布流失败: " + rtcErrorCode.toString());
                     }
                 });
 
@@ -244,7 +255,7 @@ public class RTCClient {
 
             @Override
             public void onFailed(RTCErrorCode rtcErrorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "主播加入RTC房间失败: " + rtcErrorCode.getReason());
+                SLog.e(SLog.TAG_SEAL_MIC, "主播加入RTC房间失败: " + rtcErrorCode.toString());
             }
         });
     }
@@ -257,30 +268,85 @@ public class RTCClient {
     }
 
     /**
-     * 仅直播模式可用， 作为观众，直接观看主播的直播，无需加入房间，通过传入主播的 url，仅观众端可用
-     *
-     * @param liveUrl 直播URL final SealMicResultCallback<RongRTCVideoView> callback
+     * 观众端加入房间，从5.1.0开始，观众端加入房间也走RTC的接口，RTC SDK在内部实现从IM KV工具当中读取liveUrl
+     * 不再直接从IM SDK中获取liveUrl，而是通过RTC SDK中的API获取
      */
-    public void subscribeLiveAVStream(String liveUrl) {
-        RCRTCEngine.getInstance().subscribeLiveStream(liveUrl, RCRTCAVStreamType.AUDIO, new RCRTCLiveCallback() {
+    public void audienceJoinRoom(final String roomId, final IRCRTCResultCallback ircrtcResultCallback) {
+        RCRTCRoomConfig roomConfig = RCRTCRoomConfig.Builder.create()
+                //以观众的形式进入房间
+                .setLiveRole(RCRTCLiveRole.AUDIENCE)
+                //根据实际场景，选择音视频直播：LIVE_AUDIO_VIDEO 或音频直播：LIVE_AUDIO
+                .setRoomType(RCRTCRoomType.LIVE_AUDIO)
+                .build();
+        RCRTCEngine.getInstance().joinRoom(roomId, roomConfig, new IRCRTCResultDataCallback<RCRTCRoom>() {
             @Override
-            public void onSuccess() {
-                Log.e(SLog.TAG_SEAL_MIC, "onSuccess");
-            }
+            public void onSuccess(final RCRTCRoom rcrtcRoom) {
+                rcrtcRoom.registerRoomListener(new RTCEventsListenerAdapter() {
 
-            @Override
-            public void onVideoStreamReceived(RCRTCVideoInputStream rcrtcVideoInputStream) {
-                Log.e(SLog.TAG_SEAL_MIC, "onVideoStreamReceived");
-            }
+                    /**
+                     * 房间发布流之后的回调
+                     * @param streams 流
+                     */
+                    @Override
+                    public void onPublishLiveStreams(List<RCRTCInputStream> streams) {
+                        subscribeLiveAVStream(rcrtcRoom, streams);
+                        SLog.e(SLog.TAG_SEAL_MIC, "onPublishLiveStreams: 收到房间发出的合流并订阅");
+                    }
 
-            @Override
-            public void onAudioStreamReceived(RCRTCAudioInputStream rcrtcAudioInputStream) {
-                Log.e(SLog.TAG_SEAL_MIC, "onAudioStreamReceived");
+                    /**
+                     * 房间取消发布流之后的回调
+                     * @param streams 流
+                     */
+                    @Override
+                    public void onUnpublishLiveStreams(List<RCRTCInputStream> streams) {
+                        unsubscribeLiveAVStream(rcrtcRoom, streams, ircrtcResultCallback);
+                        SLog.e(SLog.TAG_SEAL_MIC, "onUnpublishLiveStreams: 收到房间发出的合流并取消订阅");
+                    }
+
+                });
+
+                //当房间已经有人时，可以从回调的rcrtcRoom对象中拿到合流，这种情况下直接进行订阅
+                List<RCRTCInputStream> rcrtcInputStreams = rcrtcRoom.getLiveStreams();
+                if (rcrtcInputStreams != null && !rcrtcInputStreams.isEmpty()) {
+                    subscribeLiveAVStream(rcrtcRoom, rcrtcInputStreams);
+                }
+                ircrtcResultCallback.onSuccess();
             }
 
             @Override
             public void onFailed(RTCErrorCode rtcErrorCode) {
-                Log.e(SLog.TAG_SEAL_MIC, rtcErrorCode.toString());
+                ircrtcResultCallback.onFailed(rtcErrorCode);
+                SLog.e(SLog.TAG_SEAL_MIC, "观众加入RTC房间失败: " + rtcErrorCode.toString());
+            }
+        });
+    }
+
+    /**
+     * 观众退出语音聊天房间
+     */
+    public void audienceQuitRoom(String roomId, IRCRTCResultCallback ircrtcResultCallback) {
+        RCRTCEngine.getInstance().leaveRoom(ircrtcResultCallback);
+    }
+
+    /**
+     * 仅直播模式可用， 作为观众，直接观看主播的直播，无需加入房间，通过传入主播的 url，仅观众端可用
+     *
+     * @param rcrtcRoom   当前RTC房间
+     * @param liveStreams 直播URL的流 final SealMicResultCallback<RongRTCVideoView> callback
+     */
+    private void subscribeLiveAVStream(final RCRTCRoom rcrtcRoom, List<RCRTCInputStream> liveStreams) {
+        if (rcrtcRoom == null || liveStreams.isEmpty()) {
+            return;
+        }
+        rcrtcRoom.getLocalUser().subscribeStreams(liveStreams, new IRCRTCResultCallback() {
+            @Override
+            public void onSuccess() {
+                SLog.e(SLog.TAG_SEAL_MIC, "观众订阅合流成功");
+            }
+
+            @Override
+            public void onFailed(RTCErrorCode rtcErrorCode) {
+                SLog.e(SLog.TAG_SEAL_MIC, "观众订阅合流失败: " + rtcErrorCode.toString());
             }
         });
     }
@@ -288,11 +354,26 @@ public class RTCClient {
     /**
      * 取消订阅
      *
-     * @param liveUrl              直播URL
+     * @param rcrtcRoom            当前RTC房间
+     * @param liveStreams          当前订阅的live的流
      * @param ircrtcResultCallback 离开直播间结果回调
      */
-    public void unsubscribeLiveAVStream(String liveUrl, IRCRTCResultCallback ircrtcResultCallback) {
-        RCRTCEngine.getInstance().unsubscribeLiveStream(liveUrl, ircrtcResultCallback);
+    private void unsubscribeLiveAVStream(final RCRTCRoom rcrtcRoom, List<RCRTCInputStream> liveStreams, final IRCRTCResultCallback ircrtcResultCallback) {
+        if (rcrtcRoom == null || liveStreams.isEmpty()) {
+            return;
+        }
+        rcrtcRoom.getLocalUser().unsubscribeStreams(liveStreams, new IRCRTCResultCallback() {
+            @Override
+            public void onFailed(RTCErrorCode rtcErrorCode) {
+                ircrtcResultCallback.onFailed(rtcErrorCode);
+                SLog.e(SLog.TAG_SEAL_MIC, "观众取消订阅合流失败: " + rtcErrorCode.toString());
+            }
+
+            @Override
+            public void onSuccess() {
+                ircrtcResultCallback.onSuccess();
+            }
+        });
     }
 
     /**

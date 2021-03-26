@@ -2,7 +2,6 @@ package cn.rongcloud.sealmicandroid.common.factory.dialog;
 
 import android.app.Dialog;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -22,17 +21,14 @@ import cn.rongcloud.sealmicandroid.SealMicApp;
 import cn.rongcloud.sealmicandroid.common.Event;
 import cn.rongcloud.sealmicandroid.common.adapter.GiftDialogAdapter;
 import cn.rongcloud.sealmicandroid.common.adapter.SendMessageAdapter;
-import cn.rongcloud.sealmicandroid.common.constant.ErrorCode;
 import cn.rongcloud.sealmicandroid.common.factory.dialog.base.BottomDialogFactory;
 import cn.rongcloud.sealmicandroid.common.listener.OnClickGiftListener;
 import cn.rongcloud.sealmicandroid.im.IMClient;
 import cn.rongcloud.sealmicandroid.im.message.SendGiftTag;
 import cn.rongcloud.sealmicandroid.manager.CacheManager;
 import cn.rongcloud.sealmicandroid.util.ToastUtil;
-import cn.rongcloud.sealmicandroid.util.log.SLog;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.IRongCoreEnum;
 import io.rong.imlib.model.Message;
-import io.rong.imlib.model.UserInfo;
 
 /**
  * 礼物dialog工厂
@@ -128,13 +124,14 @@ public class GiftDialogFactory extends BottomDialogFactory {
                     }
 
                     @Override
-                    public void onError(Message message, RongIMClient.ErrorCode errorCode) {
-                        super.onError(message, errorCode);
+                    public void onError(Message message, IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                        super.onError(message, coreErrorCode);
                         //已经被禁言，发送消息失败
-                        if (errorCode.getValue() == ErrorCode.FORBIDDEN_IN_CHATROOM.getCode()) {
+                        if (coreErrorCode.getValue() == IRongCoreEnum.CoreErrorCode.FORBIDDEN_IN_CHATROOM.getValue()) {
                             ToastUtil.showToast(SealMicApp.getApplication().getResources().getString(R.string.cant_speak));
                         }
                     }
+
                 });
                 dialog.cancel();
             }

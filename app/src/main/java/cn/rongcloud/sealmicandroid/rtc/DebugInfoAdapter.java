@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import cn.rongcloud.rtc.api.report.StatusBean;
-import cn.rongcloud.sealmicandroid.R;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.rongcloud.rtc.api.report.StatusBean;
+import cn.rongcloud.sealmicandroid.R;
 
 public class DebugInfoAdapter extends BaseAdapter {
     private Context context;

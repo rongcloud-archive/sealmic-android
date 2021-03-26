@@ -1,6 +1,5 @@
 package cn.rongcloud.sealmicandroid.im;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -27,13 +26,13 @@ import cn.rongcloud.sealmicandroid.im.message.SendBroadcastGiftMessage;
 import cn.rongcloud.sealmicandroid.im.message.SendGiftMessage;
 import cn.rongcloud.sealmicandroid.im.message.TakeOverHostMessage;
 import cn.rongcloud.sealmicandroid.manager.CacheManager;
-import cn.rongcloud.sealmicandroid.manager.NavOptionsRouterManager;
 import cn.rongcloud.sealmicandroid.manager.RoomManager;
-import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
-import io.rong.imlib.AnnotationNotFoundException;
-import io.rong.imlib.IRongCallback;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.IRongCoreCallback;
+import io.rong.imlib.IRongCoreEnum;
+import io.rong.imlib.IRongCoreListener;
+import io.rong.imlib.RongCoreClient;
+import io.rong.imlib.chatroom.base.RongChatRoomClient;
 import io.rong.imlib.model.ChatRoomInfo;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
@@ -42,7 +41,7 @@ import io.rong.message.RecallNotificationMessage;
 import io.rong.message.TextMessage;
 
 import static cn.rongcloud.sealmicandroid.common.constant.SealMicConstant.TAG;
-import static io.rong.imlib.RongIMClient.ConnectionStatusListener.ConnectionStatus.KICKED_OFFLINE_BY_OTHER_CLIENT;
+import static io.rong.imlib.IRongCoreListener.ConnectionStatusListener.ConnectionStatus.KICKED_OFFLINE_BY_OTHER_CLIENT;
 
 /**
  * Rong IM 业务相关封装
@@ -62,11 +61,11 @@ public class IMClient {
     /**
      * 接收消息的监听器列表
      */
-    private final List<RongIMClient.OnReceiveMessageListener> onReceiveMessageListeners = new ArrayList<>();
+    private final List<IRongCoreListener.OnReceiveMessageListener> onReceiveMessageListeners = new ArrayList<>();
     /**
      * 消息撤回的监听器列表
      */
-    private final List<RongIMClient.OnRecallMessageListener> onRecallMessageListeners = new ArrayList<>();
+    private final List<IRongCoreListener.OnRecallMessageListener> onRecallMessageListeners = new ArrayList<>();
 
     public static IMClient getInstance() {
         return IMClientHelper.INSTANCE;
@@ -98,29 +97,29 @@ public class IMClient {
      */
     public void init(Context context) {
         //设置导航地址
-        RongIMClient.setServerInfo(BuildConfig.Navi_server, "");
+        RongCoreClient.setServerInfo(BuildConfig.Navi_server, "");
         /*
          * 初始化 SDK，在整个应用程序全局，只需要调用一次。建议在 Application 继承类中调用。
          */
         // 可在初始 SDK 时直接带入融云 IM 申请的APP KEY
-        RongIMClient.init(context, BuildConfig.Rong_key, false);
+        RongCoreClient.init(context, BuildConfig.Rong_key, false);
 
-        RongIMClient.registerMessageType(RoomMemberChangedMessage.class);
-        RongIMClient.registerMessageType(SendGiftMessage.class);
-        RongIMClient.registerMessageType(SendBroadcastGiftMessage.class);
-        RongIMClient.registerMessageType(KickMemberMessage.class);
-        RongIMClient.registerMessageType(HandOverHostMessage.class);
-        RongIMClient.registerMessageType(TakeOverHostMessage.class);
+        RongCoreClient.registerMessageType(RoomMemberChangedMessage.class);
+        RongCoreClient.registerMessageType(SendGiftMessage.class);
+        RongCoreClient.registerMessageType(SendBroadcastGiftMessage.class);
+        RongCoreClient.registerMessageType(KickMemberMessage.class);
+        RongCoreClient.registerMessageType(HandOverHostMessage.class);
+        RongCoreClient.registerMessageType(TakeOverHostMessage.class);
 
         //管理消息监听，由于同一时间只能有一个消息监听加入 融云 的消息监听，所以做一个消息管理来做消息路由
-        RongIMClient.setOnReceiveMessageListener(new RongIMClient.OnReceiveMessageListener() {
+        RongCoreClient.setOnReceiveMessageListener(new IRongCoreListener.OnReceiveMessageListener() {
             @Override
-            public boolean onReceived(Message message, int left) {
+            public boolean onReceived(Message message, int i) {
                 SLog.e(TAG, "onReceived message. tag:" + message.getObjectName());
                 synchronized (onReceiveMessageListeners) {
                     if (onReceiveMessageListeners.size() > 0) {
-                        for (RongIMClient.OnReceiveMessageListener listener : onReceiveMessageListeners) {
-                            boolean result = listener.onReceived(message, left);
+                        for (IRongCoreListener.OnReceiveMessageListener listener : onReceiveMessageListeners) {
+                            boolean result = listener.onReceived(message, i);
                             if (result) {
                                 break;
                             }
@@ -129,17 +128,16 @@ public class IMClient {
                 }
                 return true;
             }
-
         });
 
         //消息撤回，用来删除消息
-        RongIMClient.setOnRecallMessageListener(new RongIMClient.OnRecallMessageListener() {
+        RongCoreClient.setOnRecallMessageListener(new IRongCoreListener.OnRecallMessageListener() {
             @Override
             public boolean onMessageRecalled(Message message, RecallNotificationMessage recallNotificationMessage) {
                 SLog.e(TAG, "onRecall message. tag: " + message.getObjectName());
                 synchronized (onRecallMessageListeners) {
                     if (onRecallMessageListeners.size() > 0) {
-                        for (RongIMClient.OnRecallMessageListener onRecallMessageListener : onRecallMessageListeners) {
+                        for (IRongCoreListener.OnRecallMessageListener onRecallMessageListener : onRecallMessageListeners) {
                             boolean result = onRecallMessageListener.onMessageRecalled(message, recallNotificationMessage);
                             if (result) {
                                 break;
@@ -150,8 +148,9 @@ public class IMClient {
                 return false;
             }
         });
+
         //IM连接状态监听
-        RongIMClient.setConnectionStatusListener(new RongIMClient.ConnectionStatusListener() {
+        RongCoreClient.setConnectionStatusListener(new IRongCoreListener.ConnectionStatusListener() {
             @Override
             public void onChanged(ConnectionStatus connectionStatus) {
                 if (connectionStatus == KICKED_OFFLINE_BY_OTHER_CLIENT) {
@@ -167,16 +166,46 @@ public class IMClient {
             }
         });
 
-        //IM聊天室KV监听
-        RongIMClient.getInstance().setKVStatusListener(new RongIMClient.KVStatusListener() {
 
+        //IM聊天室KV监听
+        RongChatRoomClient.getInstance().setKVStatusListener(new RongChatRoomClient.KVStatusListener() {
             /**
              * 加入聊天室成功后，SDK 默认从服务端同步 KV 列表，同步完成后触发
              *
              * @param roomId 聊天室 Id
              */
             @Override
-            public void onChatRoomKVSync(String roomId) {
+            public void onChatRoomKVSync(final String roomId) {
+                //1. 麦位的获取
+                //等待KV同步完成之后，再进行全量KV的获取
+                //获取全部麦位的KV
+                RoomManager.getInstance().getAllChatRoomMic(roomId, new IRongCoreCallback.ResultCallback<Map<String, String>>() {
+                    @Override
+                    public void onSuccess(Map<String, String> stringStringMap) {
+                        //获取全量KV成功之后向外抛出事件
+                        EventBus.getDefault().post(new Event.ChatRoomKVSyncMicSuccessEvent(roomId, stringStringMap));
+                    }
+
+                    @Override
+                    public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                        //获取全量KV失败之后向外抛出事件
+                        EventBus.getDefault().post(new Event.ChatRoomKVSyncMicErrorEvent(coreErrorCode));
+                    }
+                });
+
+                //2. 讲话状态的获取
+                RoomManager.getInstance().getAllChatRoomSpeaking(roomId, new IRongCoreCallback.ResultCallback<Map<String, String>>() {
+                    @Override
+                    public void onSuccess(Map<String, String> stringStringMap) {
+                        //获取全量KV成功之后向外抛出事件
+                        EventBus.getDefault().post(new Event.ChatRoomKVSyncSpeakingSuccessEvent(roomId, stringStringMap));
+                    }
+
+                    @Override
+                    public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                        EventBus.getDefault().post(new Event.ChatRoomKVSyncSpeakingErrorEvent(coreErrorCode));
+                    }
+                });
 
             }
 
@@ -188,7 +217,7 @@ public class IMClient {
              */
             @Override
             public void onChatRoomKVUpdate(String roomId, Map<String, String> chatRoomKvMap) {
-
+                EventBus.getDefault().post(new Event.ChatRoomKVSyncMicSuccessEvent(roomId, chatRoomKvMap));
             }
 
             /**
@@ -199,58 +228,57 @@ public class IMClient {
              */
             @Override
             public void onChatRoomKVRemove(String roomId, Map<String, String> chatRoomKvMap) {
-
+                EventBus.getDefault().post(new Event.ChatRoomKVSyncMicSuccessEvent(roomId, chatRoomKvMap));
             }
         });
     }
 
-    public void connect(String token, final RongIMClient.ConnectCallback callback) {
-        RongIMClient.connect(token, callback);
+    public void connect(String token, final IRongCoreCallback.ConnectCallback callback) {
+        RongCoreClient.connect(token, callback);
     }
 
     public void disconnect() {
-        RongIMClient.getInstance().disconnect();
+        RongCoreClient.getInstance().disconnect(false);
     }
 
     /**
      * 加入 IM 聊天室
      */
-    public void joinChatRoom(final String roomId, final RongIMClient.ResultCallback<String> callBack) {
-        RongIMClient.getInstance().joinChatRoom(roomId, DEFAULT_MESSAGE_COUNT, new RongIMClient.OperationCallback() {
+    public void joinChatRoom(final String roomId, final IRongCoreCallback.ResultCallback<String> iJoinChatRoomCallBack) {
+        RongChatRoomClient.getInstance().joinChatRoom(roomId, DEFAULT_MESSAGE_COUNT, new IRongCoreCallback.OperationCallback() {
             @Override
             public void onSuccess() {
-                getChatRoomInfo(roomId, new RongIMClient.ResultCallback<ChatRoomInfo>() {
+                getChatRoomInfo(roomId, new IRongCoreCallback.ResultCallback<ChatRoomInfo>() {
                     @Override
                     public void onSuccess(ChatRoomInfo chatRoomInfo) {
-                        if (callBack != null) {
-                            callBack.onSuccess(roomId);
+                        if (iJoinChatRoomCallBack != null) {
+                            iJoinChatRoomCallBack.onSuccess(chatRoomInfo.getChatRoomId());
                         }
                     }
 
                     @Override
-                    public void onError(RongIMClient.ErrorCode errorCode) {
+                    public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
 
                     }
                 });
-
             }
 
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                SLog.e(SLog.TAG_IM, "join chat room error, error msg:" + errorCode.getMessage() + " , error code" + errorCode.getValue());
-                if (callBack != null) {
-                    callBack.onError(errorCode);
+            public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                SLog.e(SLog.TAG_IM, "join chat room error, error msg:" + coreErrorCode.getMessage() + " , error code" + coreErrorCode.getValue());
+                if (iJoinChatRoomCallBack != null) {
+                    iJoinChatRoomCallBack.onError(coreErrorCode);
                 }
             }
         });
+
     }
 
     /**
      * 获取房间信息
      */
-    public void getChatRoomInfo(String roomId, RongIMClient.ResultCallback<ChatRoomInfo> callback) {
-        RongIMClient.getInstance().getChatRoomInfo(
-                roomId,
+    public void getChatRoomInfo(String roomId, IRongCoreCallback.ResultCallback<ChatRoomInfo> callback) {
+        RongChatRoomClient.getInstance().getChatRoomInfo(roomId,
                 DEF_MEMBER_COUNT,
                 ChatRoomInfo.ChatRoomMemberOrder.RC_CHAT_ROOM_MEMBER_DESC,
                 callback);
@@ -260,18 +288,17 @@ public class IMClient {
     /**
      * 离开 IM 聊天室
      */
-    public void quitChatRoom(final String roomId, final RongIMClient.ResultCallback<String> callBack) {
-        RongIMClient.getInstance().quitChatRoom(roomId, new RongIMClient.OperationCallback() {
+    public void quitChatRoom(final String roomId, final IRongCoreCallback.ResultCallback<String> callBack) {
+        RongChatRoomClient.getInstance().quitChatRoom(roomId, new IRongCoreCallback.OperationCallback() {
             @Override
             public void onSuccess() {
-//                SLog.i(SLog.TAG_IM, "quitRoomSuccess");
                 if (callBack != null) {
                     callBack.onSuccess(roomId);
                 }
             }
 
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
+            public void onError(IRongCoreEnum.CoreErrorCode errorCode) {
                 SLog.e(SLog.TAG_IM, "quit chat room error, error msg:" + errorCode.getMessage() + " , error code" + errorCode.getValue());
                 if (callBack != null) {
                     callBack.onError(errorCode);
@@ -285,7 +312,7 @@ public class IMClient {
      *
      * @param listener 监听回调
      */
-    public void addMessageReceiveListener(RongIMClient.OnReceiveMessageListener listener) {
+    public void addMessageReceiveListener(IRongCoreListener.OnReceiveMessageListener listener) {
         synchronized (onReceiveMessageListeners) {
             onReceiveMessageListeners.add(listener);
         }
@@ -296,7 +323,7 @@ public class IMClient {
      *
      * @param listener 监听回调
      */
-    public void removeMessageReceiveListener(RongIMClient.OnReceiveMessageListener listener) {
+    public void removeMessageReceiveListener(IRongCoreListener.OnReceiveMessageListener listener) {
         synchronized (onReceiveMessageListeners) {
             onReceiveMessageListeners.remove(listener);
         }
@@ -305,7 +332,7 @@ public class IMClient {
     /**
      * 添加消息撤回监听
      */
-    public void addMessageRecallListener(RongIMClient.OnRecallMessageListener listener) {
+    public void addMessageRecallListener(IRongCoreListener.OnRecallMessageListener listener) {
         synchronized (onRecallMessageListeners) {
             onRecallMessageListeners.add(listener);
         }
@@ -314,7 +341,7 @@ public class IMClient {
     /**
      * 移除消息撤回监听
      */
-    public void removeMessageRecallListener(RongIMClient.OnRecallMessageListener listener) {
+    public void removeMessageRecallListener(IRongCoreListener.OnRecallMessageListener listener) {
         synchronized (onRecallMessageListeners) {
             onRecallMessageListeners.remove(listener);
         }
@@ -342,7 +369,7 @@ public class IMClient {
      * @param sendMessageAdapter 发送之后的回调
      */
     public void sendMessage(Message message, SendMessageAdapter sendMessageAdapter) {
-        RongIMClient.getInstance().sendMessage(message, null, null, sendMessageAdapter);
+        RongCoreClient.getInstance().sendMessage(message, null, null, sendMessageAdapter);
     }
 
     /**
@@ -351,42 +378,42 @@ public class IMClient {
      * @param message
      * @param callback
      */
-    public void recallMessage(Message message, String pushMessage, RongIMClient.ResultCallback<RecallNotificationMessage> callback) {
-        RongIMClient.getInstance().recallMessage(message, pushMessage, callback);
+    public void recallMessage(Message message, String pushMessage, IRongCoreCallback.ResultCallback<RecallNotificationMessage> callback) {
+        RongCoreClient.getInstance().recallMessage(message, pushMessage, callback);
     }
 
-    public void getChatRoomEntry(String chatRoomId, String key, @NonNull final RongIMClient.ResultCallback<Map<String, String>> callback) {
-        RongIMClient.getInstance().getChatRoomEntry(chatRoomId, key, callback);
+    public void getChatRoomEntry(String chatRoomId, String key, @NonNull final IRongCoreCallback.ResultCallback<Map<String, String>> callback) {
+        RongChatRoomClient.getInstance().getChatRoomEntry(chatRoomId, key, callback);
     }
 
     public void setChatRoomEntry(String roomId, String key, final String value) {
-        RongIMClient.getInstance().setChatRoomEntry(roomId, key, value, true, false, "", new RongIMClient.OperationCallback() {
+        RongChatRoomClient.getInstance().setChatRoomEntry(roomId, key, value, true, false, "", new IRongCoreCallback.OperationCallback() {
             @Override
             public void onSuccess() {
                 Log.i(TAG, "存value" + value);
             }
 
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                Log.i(TAG, "存value" + errorCode);
+            public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                Log.i(TAG, "存value,Error:" + coreErrorCode);
             }
         });
     }
 
-    public void getAllChatRoomEntries(String chatRoomId, @NonNull final RongIMClient.ResultCallback<Map<String, String>> callback) {
-        RongIMClient.getInstance().getAllChatRoomEntries(chatRoomId, callback);
+    public void getAllChatRoomEntries(String chatRoomId, @NonNull final IRongCoreCallback.ResultCallback<Map<String, String>> callback) {
+        RongChatRoomClient.getInstance().getAllChatRoomEntries(chatRoomId, callback);
     }
 
     public void setChatRoomSpeakEntry(String roomId, String key, final String value) {
-        RongIMClient.getInstance().forceSetChatRoomEntry(roomId, key, value, true, false, "", new RongIMClient.OperationCallback() {
+        RongChatRoomClient.getInstance().forceSetChatRoomEntry(roomId, key, value, true, false, "", new IRongCoreCallback.OperationCallback() {
             @Override
             public void onSuccess() {
                 Log.i("TAG-setChatRoomSpeak", "存speak-success" + value);
             }
 
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                Log.i("TAG-setChatRoomSpeak", "存speak-error-code：" + errorCode);
+            public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                Log.i("TAG-setChatRoomSpeak", "存speak-error-code：" + coreErrorCode);
             }
         });
     }
@@ -455,8 +482,9 @@ public class IMClient {
         return sendSuperGiftBean;
     }
 
-    public void getHistoryMessage(String roomId, IRongCallback.IChatRoomHistoryMessageCallback callback) {
-        RongIMClient.getInstance().getChatroomHistoryMessages(roomId, 0, 20, RongIMClient.TimestampOrder.RC_TIMESTAMP_ASC, callback);
+    public void getHistoryMessage(String roomId, IRongCoreCallback.IChatRoomHistoryMessageCallback callback) {
+        RongChatRoomClient.getInstance().getChatroomHistoryMessages(roomId, 0, 20,
+                IRongCoreEnum.TimestampOrder.RC_TIMESTAMP_ASC, callback);
     }
 
 }

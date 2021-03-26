@@ -4,21 +4,14 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 import java.util.concurrent.ExecutionException;
 
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.common.SealMicResultCallback;
-import cn.rongcloud.sealmicandroid.util.DisplayUtil;
-import cn.rongcloud.sealmicandroid.util.RandomUtil;
 
 /**
  * Glide加载图片管理类，主要是封装一些通用的加载图片的方法

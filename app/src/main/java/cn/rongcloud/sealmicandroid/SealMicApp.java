@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,8 +30,10 @@ import cn.rongcloud.sealmicandroid.im.IMClient;
 import cn.rongcloud.sealmicandroid.manager.CacheManager;
 import cn.rongcloud.sealmicandroid.manager.ThreadManager;
 import cn.rongcloud.sealmicandroid.net.client.HttpClient;
+import cn.rongcloud.sealmicandroid.rtc.RTCClient;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.IRongCoreCallback;
+import io.rong.imlib.IRongCoreEnum;
 
 /**
  * 项目application
@@ -79,6 +80,8 @@ public class SealMicApp extends MultiDexApplication {
 
         //初始化IM
         IMClient.getInstance().init(getApplicationContext());
+        //初始化MediaServer
+        RTCClient.getInstance().initMediaServer();
         //初始化网络请求
         HttpClient.getInstance().init(getApplicationContext());
         //初始化后清除掉请求认证缓存，保证每次登录都使用不用的用户
@@ -210,30 +213,30 @@ public class SealMicApp extends MultiDexApplication {
         }
     }
 
-    public void connectIM() {
+    private void connectIM() {
         String token = CacheManager.getInstance().getToken();
         if (token.isEmpty()) {
             EventBus.getDefault().postSticky(new Event.UserTokenLose());
             return;
         }
-        SLog.i(SLog.TAG_SEAL_MIC, "token: " + token);
-        IMClient.getInstance().connect(token, new RongIMClient.ConnectCallback() {
+        SLog.e(SLog.TAG_SEAL_MIC, "token: " + token);
+        IMClient.getInstance().connect(token, new IRongCoreCallback.ConnectCallback() {
             @Override
             public void onSuccess(String s) {
                 SLog.e(SLog.TAG_SEAL_MIC, "IM连接成功");
             }
 
             @Override
-            public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "IM连接失败，错误码为: " + connectionErrorCode.getValue());
-                if (connectionErrorCode.equals(RongIMClient.ConnectionErrorCode.RC_CONN_TOKEN_INCORRECT)) {
+            public void onError(IRongCoreEnum.ConnectionErrorCode connectionErrorCode) {
+                SLog.e(SLog.TAG_SEAL_MIC, "IM连接失败，错误码为: " + connectionErrorCode.toString());
+                if (connectionErrorCode.equals(IRongCoreEnum.ConnectionErrorCode.RC_CONN_TOKEN_INCORRECT)) {
                     //从 获取新 token，并重连,发送Event
                     EventBus.getDefault().postSticky(new Event.UserTokenLose());
                 }
             }
 
             @Override
-            public void onDatabaseOpened(RongIMClient.DatabaseOpenStatus databaseOpenStatus) {
+            public void onDatabaseOpened(IRongCoreEnum.DatabaseOpenStatus databaseOpenStatus) {
 
             }
         });

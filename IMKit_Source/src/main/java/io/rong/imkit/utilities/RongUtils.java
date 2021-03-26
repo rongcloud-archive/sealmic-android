@@ -27,8 +27,6 @@ import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import io.rong.common.LibStorageUtils;
-import io.rong.common.RLog;
 import io.rong.imkit.R;
 
 public class RongUtils {
@@ -126,7 +124,7 @@ public class RongUtils {
             x = Integer.parseInt(field.get(obj).toString());
             sbar = context.getResources().getDimensionPixelSize(x);
         } catch (Exception E) {
-            RLog.e(TAG, "getStatusBarHeight", E);
+            Log.e(TAG, "getStatusBarHeight", E);
         }
         return sbar;
     }
@@ -160,13 +158,13 @@ public class RongUtils {
             Bitmap bitmap = BitmapFactory.decodeStream(is, new Rect(), options);
             return new BitmapDrawable(context.getResources(), bitmap);
         } catch (Exception e) {
-            RLog.e(TAG, "getDrawable", e);
+            Log.e(TAG, "getDrawable", e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    RLog.e(TAG, "getDrawable", e);
+                    Log.e(TAG, "getDrawable", e);
                 }
             }
         }
@@ -229,7 +227,7 @@ public class RongUtils {
         try {
             bitmap = BitmapFactory.decodeFile(path, options);
         } catch (OutOfMemoryError e) {
-            RLog.e(TAG, "getResizedBitmap", e);
+            Log.e(TAG, "getResizedBitmap", e);
             options.inSampleSize = options.inSampleSize << 1;
             bitmap = BitmapFactory.decodeFile(path, options);
         }
@@ -281,7 +279,7 @@ public class RongUtils {
         try {
             result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         } catch (OutOfMemoryError e) {
-            RLog.e(TAG, "getResizedBitmap", e);
+            Log.e(TAG, "getResizedBitmap", e);
             Log.e("ResourceCompressHandler", "OOM" + "Height:" + bitmap.getHeight() + "Width:" + bitmap.getHeight() + "matrix:" + xS + " " + yS);
             return null;
         }
@@ -299,7 +297,7 @@ public class RongUtils {
             mp.release();
             return duration;
         } catch (Exception e) {
-            RLog.e(TAG, e.toString());
+            Log.e(TAG, e.toString());
             return 0;
         }
     }
@@ -334,34 +332,34 @@ public class RongUtils {
             oos.close();
             bos.close();
         } catch (IOException ex) {
-            RLog.e(TAG, "toByteArray", ex);
+            Log.e(TAG, "toByteArray", ex);
         }
         return bytes;
     }
 
-    /**
-     * 获取保存图片的路径
-     */
-    @Deprecated
-    public static String getImageSavePath(Context context) {
-        return KitStorageUtils.getImageSavePath(context);
-    }
+//    /**
+//     * 获取保存图片的路径
+//     */
+//    @Deprecated
+//    public static String getImageSavePath(Context context) {
+//        return KitStorageUtils.getImageSavePath(context);
+//    }
 
-    @Deprecated
-    public static String getVideoSavePath(Context context) {
-        return KitStorageUtils.getVideoSavePath(context);
-    }
+//    @Deprecated
+//    public static String getVideoSavePath(Context context) {
+//        return KitStorageUtils.getVideoSavePath(context);
+//    }
+//
+//    @Deprecated
+//    public static String getFileSavePath(Context context) {
+//        return KitStorageUtils.getFileSavePath(context);
+//    }
 
-    @Deprecated
-    public static String getFileSavePath(Context context) {
-        return KitStorageUtils.getFileSavePath(context);
-    }
-
-    /**
-     * 获取应用程序名称
-     */
-    @Deprecated
-    public static String getAppName(Context context) {
-        return LibStorageUtils.getAppName(context);
-    }
+//    /**
+//     * 获取应用程序名称
+//     */
+//    @Deprecated
+//    public static String getAppName(Context context) {
+//        return LibStorageUtils.getAppName(context);
+//    }
 }

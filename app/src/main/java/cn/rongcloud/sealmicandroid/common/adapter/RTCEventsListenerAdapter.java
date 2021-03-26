@@ -48,6 +48,16 @@ public class RTCEventsListenerAdapter extends IRCRTCRoomEventsListener {
     }
 
     @Override
+    public void onPublishLiveStreams(List<RCRTCInputStream> list) {
+
+    }
+
+    @Override
+    public void onUnpublishLiveStreams(List<RCRTCInputStream> list) {
+
+    }
+
+    @Override
     public void onVideoTrackAdd(String s, String s1) {
 
     }

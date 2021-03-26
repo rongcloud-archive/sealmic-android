@@ -2,19 +2,14 @@ package cn.rongcloud.sealmicandroid.common.factory.dialog;
 
 import android.app.Dialog;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import cn.rongcloud.sealmicandroid.R;
@@ -22,11 +17,6 @@ import cn.rongcloud.sealmicandroid.common.adapter.ButtonBaseDialogAdapter;
 import cn.rongcloud.sealmicandroid.common.factory.dialog.base.BottomDialogFactory;
 import cn.rongcloud.sealmicandroid.common.listener.OnDialogButtonListClickListener;
 import cn.rongcloud.sealmicandroid.manager.GlideManager;
-import cn.rongcloud.sealmicandroid.manager.ThreadManager;
-import cn.rongcloud.sealmicandroid.util.BitmapUtil;
-import cn.rongcloud.sealmicandroid.util.SystemUtil;
-import cn.rongcloud.sealmicandroid.util.ToastUtil;
-import cn.rongcloud.sealmicandroid.util.log.SLog;
 
 /**
  * 点击消息列表弹出的 dialog 工厂

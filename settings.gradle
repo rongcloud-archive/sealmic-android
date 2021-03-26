@@ -16,7 +16,7 @@ def printGradleInfoInRoot() {
 }
 
 static def currentTime() {
-    return System.currentTimeMillis() / 10000
+    return (int) (System.currentTimeMillis() / 10000)
 }
 
 printGradleInfoInRoot()

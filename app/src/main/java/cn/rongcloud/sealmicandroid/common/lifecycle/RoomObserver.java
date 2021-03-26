@@ -24,10 +24,12 @@ import cn.rongcloud.sealmicandroid.manager.CacheManager;
 import cn.rongcloud.sealmicandroid.manager.RoomManager;
 import cn.rongcloud.sealmicandroid.rtc.RTCClient;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.IRongCoreCallback;
+import io.rong.imlib.IRongCoreEnum;
+import io.rong.imlib.IRongCoreListener;
+import io.rong.imlib.chatroom.message.ChatRoomKVNotiMessage;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
-import io.rong.message.ChatRoomKVNotiMessage;
 import io.rong.message.RecallNotificationMessage;
 import io.rong.message.TextMessage;
 
@@ -36,11 +38,11 @@ import io.rong.message.TextMessage;
  */
 public class RoomObserver implements LifecycleObserver {
 
-    private RongIMClient.OnReceiveMessageListener onReceiveMessageListener;
-    private RongIMClient.OnRecallMessageListener onRecallMessageListener;
+    private IRongCoreListener.OnReceiveMessageListener onReceiveMessageListener;
+    private IRongCoreListener.OnRecallMessageListener onRecallMessageListener;
 
     private void obtainIMReceiveMessageListener() {
-        onReceiveMessageListener = new RongIMClient.OnReceiveMessageListener() {
+        this.onReceiveMessageListener = new IRongCoreListener.OnReceiveMessageListener() {
             @Override
             public boolean onReceived(Message message, int i) {
                 MessageContent messageContent = message.getContent();
@@ -95,7 +97,7 @@ public class RoomObserver implements LifecycleObserver {
     }
 
     private void obtainIMRecallMessageListener() {
-        onRecallMessageListener = new RongIMClient.OnRecallMessageListener() {
+        onRecallMessageListener = new IRongCoreListener.OnRecallMessageListener() {
             @Override
             public boolean onMessageRecalled(Message message, RecallNotificationMessage recallNotificationMessage) {
                 MessageContent messageContent = message.getContent();
@@ -127,31 +129,32 @@ public class RoomObserver implements LifecycleObserver {
         //退出聊天室
         //退房时如果是观众，退订RTC + 退出IM
         if (CacheManager.getInstance().getUserRoleType() == UserRoleType.AUDIENCE.getValue()) {
-            RoomManager.getInstance().audienceQuitRoom(CacheManager.getInstance().getRoomId(), new RongIMClient.ResultCallback<String>() {
+            RoomManager.getInstance().audienceQuitRoom(CacheManager.getInstance().getRoomId(), new IRongCoreCallback.ResultCallback<String>() {
                 @Override
                 public void onSuccess(String s) {
                     SLog.e(SLog.TAG_SEAL_MIC, "观众退房");
                 }
 
                 @Override
-                public void onError(RongIMClient.ErrorCode errorCode) {
-                    SLog.e(SLog.TAG_SEAL_MIC, "观众退房失败: " + errorCode.getValue());
+                public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                    SLog.e(SLog.TAG_SEAL_MIC, "观众退房失败: " + coreErrorCode.toString());
                 }
             });
         }
         //退房时如果是主播，退出RTC + 退出IM + 调用demo server主播下麦接口
         if (CacheManager.getInstance().getUserRoleType() == UserRoleType.HOST.getValue()
                 || CacheManager.getInstance().getUserRoleType() == UserRoleType.CONNECT_MIC.getValue()) {
-            RoomManager.getInstance().micQuitRoom(CacheManager.getInstance().getRoomId(), new RongIMClient.ResultCallback<String>() {
+            RoomManager.getInstance().micQuitRoom(CacheManager.getInstance().getRoomId(), new IRongCoreCallback.ResultCallback<String>() {
                 @Override
                 public void onSuccess(String s) {
                     SLog.e(SLog.TAG_SEAL_MIC, "连麦者退房");
                 }
 
                 @Override
-                public void onError(RongIMClient.ErrorCode errorCode) {
-                    SLog.e(SLog.TAG_SEAL_MIC, "连麦者退房失败: " + errorCode.getValue());
+                public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                    SLog.e(SLog.TAG_SEAL_MIC, "连麦者退房失败: " + coreErrorCode.toString());
                 }
+
             });
         }
         RTCClient.getInstance().stopMix();

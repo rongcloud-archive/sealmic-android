@@ -2,7 +2,6 @@ package cn.rongcloud.sealmicandroid.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 

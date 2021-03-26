@@ -1,6 +1,5 @@
 package cn.rongcloud.sealmicandroid.ui.main;
 
-import android.content.Intent;
 import android.view.View;
 
 import androidx.lifecycle.ViewModel;

@@ -17,9 +17,7 @@ import java.util.List;
 
 import cn.rongcloud.sealmicandroid.R;
 import cn.rongcloud.sealmicandroid.SealMicApp;
-import cn.rongcloud.sealmicandroid.common.constant.SealMicErrorMsg;
 import cn.rongcloud.sealmicandroid.im.message.SendGiftMessage;
-import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;

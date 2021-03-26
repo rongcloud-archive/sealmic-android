@@ -1,6 +1,5 @@
 package cn.rongcloud.sealmicandroid.ui.login;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -34,7 +33,6 @@ import cn.rongcloud.sealmicandroid.manager.NavOptionsRouterManager;
 import cn.rongcloud.sealmicandroid.ui.widget.CustomTitleBar;
 import cn.rongcloud.sealmicandroid.ui.widget.spannable.AgreeClickableSpan;
 import cn.rongcloud.sealmicandroid.util.KeyBoardUtil;
-import cn.rongcloud.sealmicandroid.util.log.SLog;
 
 /**
  * 登录界面

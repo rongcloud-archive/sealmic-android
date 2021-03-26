@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import cn.rongcloud.sealmicandroid.model.AppModel;
 import cn.rongcloud.sealmicandroid.net.client.HttpClient;
 import cn.rongcloud.sealmicandroid.ui.login.LoginViewModel;
 import cn.rongcloud.sealmicandroid.ui.main.AppVersionViewModel;

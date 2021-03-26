@@ -11,7 +11,6 @@ import cn.rongcloud.sealmicandroid.common.NetStateLiveData;
 import cn.rongcloud.sealmicandroid.common.constant.ErrorCode;
 import cn.rongcloud.sealmicandroid.common.constant.SealMicErrorMsg;
 import cn.rongcloud.sealmicandroid.manager.ThreadManager;
-import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 import okhttp3.ResponseBody;
 import retrofit2.Call;

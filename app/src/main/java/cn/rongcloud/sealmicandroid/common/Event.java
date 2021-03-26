@@ -13,8 +13,9 @@ import cn.rongcloud.sealmicandroid.im.message.KickMemberMessage;
 import cn.rongcloud.sealmicandroid.im.message.SendBroadcastGiftMessage;
 import cn.rongcloud.sealmicandroid.im.message.SendGiftMessage;
 import cn.rongcloud.sealmicandroid.im.message.TakeOverHostMessage;
+import io.rong.imlib.IRongCoreEnum;
+import io.rong.imlib.chatroom.message.ChatRoomKVNotiMessage;
 import io.rong.imlib.model.Message;
-import io.rong.message.ChatRoomKVNotiMessage;
 
 /**
  * 事件总线EventBus 事件类
@@ -442,6 +443,78 @@ public class Event {
      */
     public static class UserTokenLose {
 
+    }
+
+    /**
+     * 等待KV同步完成，且全量麦位的KV的获取成功之后，向外部抛出的事件
+     */
+    public static class ChatRoomKVSyncMicSuccessEvent {
+        private String roomId;
+        private Map<String, String> stringStringMap;
+
+        public ChatRoomKVSyncMicSuccessEvent(String roomId, Map<String, String> stringStringMap) {
+            this.roomId = roomId;
+            this.stringStringMap = stringStringMap;
+        }
+
+        public String getRoomId() {
+            return roomId;
+        }
+
+        public Map<String, String> getStringStringMap() {
+            return stringStringMap;
+        }
+    }
+
+    /**
+     * 等待KV同步完成，且全量麦位的KV的获取失败之后，向外抛出的事件
+     */
+    public static class ChatRoomKVSyncMicErrorEvent {
+        private IRongCoreEnum.CoreErrorCode coreErrorCode;
+
+        public ChatRoomKVSyncMicErrorEvent(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+            this.coreErrorCode = coreErrorCode;
+        }
+
+        public IRongCoreEnum.CoreErrorCode getCoreErrorCode() {
+            return coreErrorCode;
+        }
+    }
+
+    /**
+     * 讲话状态KV获取成功向外抛出事件
+     */
+    public static class ChatRoomKVSyncSpeakingSuccessEvent {
+        private String roomId;
+        private Map<String, String> stringStringMap;
+
+        public ChatRoomKVSyncSpeakingSuccessEvent(String roomId, Map<String, String> stringStringMap) {
+            this.roomId = roomId;
+            this.stringStringMap = stringStringMap;
+        }
+
+        public String getRoomId() {
+            return roomId;
+        }
+
+        public Map<String, String> getStringStringMap() {
+            return stringStringMap;
+        }
+    }
+
+    /**
+     * 讲话状态KV获取失败向外抛出事件
+     */
+    public static class ChatRoomKVSyncSpeakingErrorEvent {
+        private IRongCoreEnum.CoreErrorCode coreErrorCode;
+
+        public ChatRoomKVSyncSpeakingErrorEvent(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+            this.coreErrorCode = coreErrorCode;
+        }
+
+        public IRongCoreEnum.CoreErrorCode getCoreErrorCode() {
+            return coreErrorCode;
+        }
     }
 
 }

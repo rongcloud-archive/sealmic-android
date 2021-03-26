@@ -40,7 +40,7 @@ import io.rong.imkit.emoticon.IEmoticonSettingClickListener;
 import io.rong.imkit.emoticon.IEmoticonTab;
 import io.rong.imkit.utilities.ExtensionHistoryUtil;
 import io.rong.imkit.utilities.KitCommonDefine;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.RongCoreClient;
 import io.rong.imlib.model.Conversation;
 
 public class RongExtension extends LinearLayout implements View.OnClickListener, View.OnTouchListener {
@@ -443,7 +443,7 @@ public class RongExtension extends LinearLayout implements View.OnClickListener,
     private void initData() {
         mExtensionModuleList = RongExtensionManager.getInstance().getExtensionModules();
         mEmotionTabAdapter = new EmoticonTabAdapter();
-        mUserId = RongIMClient.getInstance().getCurrentUserId();
+        mUserId = RongCoreClient.getInstance().getCurrentUserId();
         try {
             boolean enable = getResources().getBoolean(getResources().getIdentifier("rc_extension_history", "bool", getContext().getPackageName()));
             ExtensionHistoryUtil.setEnableHistory(enable);

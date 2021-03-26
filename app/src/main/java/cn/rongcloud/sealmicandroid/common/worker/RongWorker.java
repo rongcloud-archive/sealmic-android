@@ -7,9 +7,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import cn.rongcloud.sealmicandroid.BuildConfig;
-import cn.rongcloud.sealmicandroid.im.IMClient;
-import cn.rongcloud.sealmicandroid.manager.ThreadManager;
-import cn.rongcloud.sealmicandroid.net.client.HttpClient;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
 import io.rong.imkit.DefaultExtensionModule;
 import io.rong.imkit.RongExtensionManager;

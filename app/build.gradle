@@ -35,6 +35,7 @@ android {
         buildConfigField("String", "Img_address", "\"${Img_address}\"")
         buildConfigField("String", "Bugly_app_id", "\"${Bugly_app_id}\"")
         buildConfigField("String", "Navi_server", "\"${Navi_server}\"")
+        buildConfigField("String", "Media_server", "\"${Media_server}\"")
 
         resValue "string", "App_name", "${App_name}"
 

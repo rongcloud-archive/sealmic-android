@@ -1,5 +1,6 @@
 package cn.rongcloud.sealmicandroid.ui.room;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.lifecycle.MutableLiveData;
@@ -41,6 +42,10 @@ public class CreateRoomViewModel extends ViewModel {
     }
 
     public void createRoom(final View view, String roomName) {
+        //判空
+        if (TextUtils.isEmpty(roomName)) {
+            return;
+        }
 
         //校验
         if (!PatternUtil.filterRoomName(roomName)) {

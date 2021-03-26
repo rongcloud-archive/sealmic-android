@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -38,7 +41,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import cn.rongcloud.rtc.api.report.StatusBean;
 import cn.rongcloud.rtc.api.report.StatusReport;
@@ -108,13 +110,14 @@ import cn.rongcloud.sealmicandroid.util.KeyBoardUtil;
 import cn.rongcloud.sealmicandroid.util.SystemUtil;
 import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
-import io.rong.imlib.IRongCallback;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.IRongCoreCallback;
+import io.rong.imlib.IRongCoreEnum;
+import io.rong.imlib.RongCoreClient;
+import io.rong.imlib.chatroom.message.ChatRoomKVNotiMessage;
 import io.rong.imlib.model.ChatRoomInfo;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
-import io.rong.message.ChatRoomKVNotiMessage;
 import io.rong.message.RecallNotificationMessage;
 import io.rong.message.TextMessage;
 
@@ -150,7 +153,7 @@ public class ChatRoomFragment extends Fragment {
     private List<String> userIdList;
     boolean isAudienceJoin = false;
     boolean isAudienceFreeMic = false;
-    String name;
+    private String name;
     /**
      * 请求房间详情是否弹出设置dialog
      */
@@ -172,6 +175,11 @@ public class ChatRoomFragment extends Fragment {
      */
     private DebugInfoAdapter debugInfoAdapter;
 
+    /**
+     * 控制锁屏
+     */
+    private PowerManager.WakeLock wakeLock;
+
     public ChatRoomFragment() {
         // Required empty public constructor
     }
@@ -179,7 +187,9 @@ public class ChatRoomFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        Window window = getActivity().getWindow();
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getLifecycle().addObserver(new RoomObserver());
         gson = new Gson();
         if (getArguments() != null) {
@@ -221,6 +231,26 @@ public class ChatRoomFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        PowerManager powerManager = ((PowerManager) requireActivity().getSystemService(Context.POWER_SERVICE));
+        if (powerManager != null) {
+            wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, TAG);
+            if (wakeLock != null) {
+                wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (wakeLock != null) {
+            wakeLock.release();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         if (CacheManager.getInstance().getUserRoleType() == UserRoleType.HOST.getValue()
@@ -239,6 +269,7 @@ public class ChatRoomFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        SLog.d(RoomObserver.class.getSimpleName(), "FragmentId: " + this.getId() + " ON_DESTROY");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -386,7 +417,7 @@ public class ChatRoomFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(Event.EventMemberChangeMessage eventMemberChangeMessage) {
+    public void onEventMemberChange(Event.EventMemberChangeMessage eventMemberChangeMessage) {
         KickMemberMessage roomMemberChangeMessage = eventMemberChangeMessage.getRoomMemberChangeMessage();
         if (roomMemberChangeMessage.getType() == 0) {
             ToastUtil.showToast("被踢出了房间");
@@ -504,9 +535,9 @@ public class ChatRoomFragment extends Fragment {
                                 newMicBean.getPosition() == 0
                                         ? UserRoleType.HOST.getValue()
                                         : UserRoleType.CONNECT_MIC.getValue(),
-                                new SealMicResultCallback<Map<String, String>>() {
+                                new SealMicResultCallback<String>() {
                                     @Override
-                                    public void onSuccess(Map<String, String> stringStringMap) {
+                                    public void onSuccess(String roomId) {
                                         //切换角色上麦成功之后，更新当前用户角色
                                         ThreadManager.getInstance().runOnUIThread(new Runnable() {
                                             @Override
@@ -572,9 +603,9 @@ public class ChatRoomFragment extends Fragment {
                         chatRoomViewModel.switchMic(roomId,
                                 CacheManager.getInstance().getUserRoleType(),
                                 UserRoleType.AUDIENCE.getValue(),
-                                new SealMicResultCallback<Map<String, String>>() {
+                                new SealMicResultCallback<String>() {
                                     @Override
-                                    public void onSuccess(Map<String, String> stringStringMap) {
+                                    public void onSuccess(String stringStringMap) {
                                         //切换角色下麦成功之后，更新当前用户角色
                                         ThreadManager.getInstance().runOnUIThread(new Runnable() {
                                             @Override
@@ -854,7 +885,7 @@ public class ChatRoomFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+                    public void onError(Message message, IRongCoreEnum.CoreErrorCode errorCode) {
                         super.onError(message, errorCode);
                         //已经被禁言，发送消息失败
                         if (errorCode.getValue() == ErrorCode.FORBIDDEN_IN_CHATROOM.getCode()) {
@@ -918,24 +949,26 @@ public class ChatRoomFragment extends Fragment {
                 CacheManager.getInstance().getUserName(),
                 Uri.parse(CacheManager.getInstance().getUserPortrait())));
 
-        RongIMClient.getInstance().sendMessage(Conversation.ConversationType.CHATROOM, roomId, currentUserTextMessage, null, null, new IRongCallback.ISendMessageCallback() {
-            @Override
-            public void onAttached(Message message) {
+        RongCoreClient.getInstance().sendMessage(Conversation.ConversationType.CHATROOM, roomId,
+                currentUserTextMessage, null, null, new IRongCoreCallback.ISendMessageCallback() {
+                    @Override
+                    public void onAttached(Message message) {
 
-            }
+                    }
 
-            @Override
-            public void onSuccess(Message message) {
-                roomChatMessageListAdapter.addMessages(message);
-                //设置定位到最后一行
-                fragmentChatRoomBinding.chatroomListChat.setSelection(roomChatMessageListAdapter.getCount());
-            }
+                    @Override
+                    public void onSuccess(Message message) {
+                        roomChatMessageListAdapter.addMessages(message);
+                        //设置定位到最后一行
+                        fragmentChatRoomBinding.chatroomListChat.setSelection(roomChatMessageListAdapter.getCount());
+                    }
 
-            @Override
-            public void onError(Message message, RongIMClient.ErrorCode errorCode) {
+                    @Override
+                    public void onError(Message message, IRongCoreEnum.CoreErrorCode coreErrorCode) {
 
-            }
-        });
+                    }
+
+                });
         if (roomChatMessageListAdapter.getCount() > 0) {
             //设置定位到最后一行
             fragmentChatRoomBinding.chatroomListChat.setSelection(roomChatMessageListAdapter.getCount());
@@ -1221,7 +1254,7 @@ public class ChatRoomFragment extends Fragment {
             @Override
             public void onSuccess(Boolean aBoolean) {
                 if (aBoolean) {
-                    IMClient.getInstance().getChatRoomInfo(roomId, new RongIMClient.ResultCallback<ChatRoomInfo>() {
+                    IMClient.getInstance().getChatRoomInfo(roomId, new IRongCoreCallback.ResultCallback<ChatRoomInfo>() {
                         @Override
                         public void onSuccess(ChatRoomInfo chatRoomInfo) {
                             int onlineNumber = chatRoomInfo.getTotalMemberCount();
@@ -1230,7 +1263,7 @@ public class ChatRoomFragment extends Fragment {
                         }
 
                         @Override
-                        public void onError(RongIMClient.ErrorCode errorCode) {
+                        public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
 
                         }
                     });
@@ -1254,8 +1287,8 @@ public class ChatRoomFragment extends Fragment {
                 @Override
                 public void onSuccess(Boolean b) {
                     SLog.e(SLog.TAG_SEAL_MIC, "以观众的身份加入房间");
-                    initMic();
-                    initSpeak();
+//                    initMic();
+//                    initSpeak();
                     //房间加入成功，初始化音频
                     //设置扬声器播放的图标
                     //获取手机系统数据，是否为扬声器播放
@@ -1276,15 +1309,15 @@ public class ChatRoomFragment extends Fragment {
             SLog.e(SLog.TAG_SEAL_MIC, "当前是主持人，显示Mic等图标");
             fragmentChatRoomBinding.chatroomVoiceIn.setVisibility(View.VISIBLE);
             fragmentChatRoomBinding.chatroomVoice.setVisibility(View.VISIBLE);
-            RoomManager.getInstance().micJoinRoom(roomId, new RongIMClient.ResultCallback<String>() {
+            RoomManager.getInstance().micJoinRoom(roomId, new IRongCoreCallback.ResultCallback<String>() {
                 @Override
-                public void onSuccess(String roomId) {
+                public void onSuccess(String s) {
                     SLog.e(SLog.TAG_SEAL_MIC, "以主持人的身份加入房间");
                     //创建房间之后，保存用户角色，关键盘，跳走
                     CacheManager.getInstance().cacheUserRoleType(UserRoleType.HOST.getValue());
                     KeyBoardUtil.closeKeyBoard(requireActivity(), getView());
-                    initMic();
-                    initSpeak();
+//                    initMic();
+//                    initSpeak();
                     //房间加入成功，初始化音频
                     //设置扬声器播放的图标
                     boolean speakerphoneOn = RTCClient.getInstance().isSpeakerphoneOn(SealMicApp.getApplication());
@@ -1294,8 +1327,8 @@ public class ChatRoomFragment extends Fragment {
                 }
 
                 @Override
-                public void onError(RongIMClient.ErrorCode errorCode) {
-                    SLog.e(SLog.TAG_SEAL_MIC, "以主持人的身份加入房间" + errorCode);
+                public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                    SLog.e(SLog.TAG_SEAL_MIC, "以主持人的身份加入房间" + coreErrorCode);
                 }
             });
         }
@@ -1308,7 +1341,7 @@ public class ChatRoomFragment extends Fragment {
     public void recallMessage(final Message message, String pushMessage) {
 //        if (message.getMessageId())
         SLog.i("asdff", message.getMessageId() + "");
-        IMClient.getInstance().recallMessage(message, pushMessage, new RongIMClient.ResultCallback<RecallNotificationMessage>() {
+        IMClient.getInstance().recallMessage(message, pushMessage, new IRongCoreCallback.ResultCallback<RecallNotificationMessage>() {
             /**
              * 删除消息成功的回调
              * @param recallNotificationMessage
@@ -1321,137 +1354,134 @@ public class ChatRoomFragment extends Fragment {
 
             /**
              * 删除消息失败的回调
-             * @param errorCode
+             * @param coreErrorCode
              */
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "消息删除失败: " + errorCode.getValue());
+            public void onError(IRongCoreEnum.CoreErrorCode coreErrorCode) {
+                SLog.e(SLog.TAG_SEAL_MIC, "消息删除失败: " + coreErrorCode.getValue());
             }
         });
     }
 
-    public void initSpeak() {
-        RoomManager.getInstance().getAllChatRoomSpeaking(roomId, new RongIMClient.ResultCallback<Map<String, String>>() {
-            @Override
-            public void onSuccess(Map<String, String> stringStringMap) {
-                for (String key : stringStringMap.keySet()) {
-                    final SpeakBean speakBean = gson.fromJson(stringStringMap.get(key), SpeakBean.class);
-                    ThreadManager.getInstance().runOnUIThread(new Runnable() {
-                        @Override
-                        public void run() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void initSpeakSuccess(Event.ChatRoomKVSyncSpeakingSuccessEvent chatRoomKVSyncSpeakingSuccessEvent) {
+        Map<String, String> stringStringMap = chatRoomKVSyncSpeakingSuccessEvent.getStringStringMap();
+        for (String key : stringStringMap.keySet()) {
+            final SpeakBean speakBean = gson.fromJson(stringStringMap.get(key), SpeakBean.class);
+            ThreadManager.getInstance().runOnUIThread(new Runnable() {
+                @Override
+                public void run() {
 //                            if (1 == speakBean.getSpeaking()) {
 //                                dynamicAvatarViewList.get(speakBean.getPosition()).startSpeak();
 //                            } else {
 //                                dynamicAvatarViewList.get(speakBean.getPosition()).stopSpeak();
 //                            }
+                }
+            });
+
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void initSpeakError(Event.ChatRoomKVSyncSpeakingErrorEvent chatRoomKVSyncSpeakingErrorEvent) {
+        IRongCoreEnum.CoreErrorCode coreErrorCode = chatRoomKVSyncSpeakingErrorEvent.getCoreErrorCode();
+        SLog.e(SLog.TAG_SEAL_MIC, "获取正在讲话的KV信息失败，错误码为: " + coreErrorCode);
+//                ToastUtil.showToast("获取正在讲话的KV信息失败，错误码为: " + errorCode);
+//        NavOptionsRouterManager.getInstance().backUp(getView());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void initMicSuccess(Event.ChatRoomKVSyncMicSuccessEvent chatRoomKVSyncSuccessEvent) {
+        //根据KV判断，如果对应的麦位上有人，则用对应的信息填充麦位
+        Map<String, String> stringStringMap = chatRoomKVSyncSuccessEvent.getStringStringMap();
+        RoomManager.getInstance().transMicBean(stringStringMap, new SealMicResultCallback<MicBean>() {
+            @Override
+            public void onSuccess(final MicBean micBean) {
+                //初始化麦位时本地保存一份麦位map
+                if (micBean == null) {
+                    return;
+                }
+                localMicBeanMap.put(micBean.getPosition(), micBean);
+                userIdList = new ArrayList<>();
+                userIdList.add(micBean.getUserId());
+                chatRoomViewModel.userBatch(userIdList);
+                //请求完后更新V层
+                //Can't access the Fragment View's LifecycleOwner when getView() is null i.e., before onCreateView() or after onDestroyView()
+                if (getView() != null) {
+                    chatRoomViewModel.getUserinfolistRepoLiveData().observe(getViewLifecycleOwner(), new Observer<NetResult<List<RoomMemberRepo.MemberBean>>>() {
+                        @Override
+                        public void onChanged(NetResult<List<RoomMemberRepo.MemberBean>> listNetResult) {
+                            if (listNetResult != null && listNetResult.getData().size() != 0) {
+//                                        dynamicAvatarViewList.get(micBean.getPosition()).stopSpeak();
+                                GlideManager.getInstance().setUrlImage(fragmentChatRoomBinding.getRoot(),
+                                        listNetResult.getData().get(0).getPortrait(),
+                                        dynamicAvatarViewList.get(micBean.getPosition()).getUserImg());
+                                micTextLayoutList.get(micBean.getPosition()).HasMic(listNetResult.getData().get(0).getUserName());
+                            }
+                            if (micBean.getState() == MicState.NORMAL.getState()) {
+                                dynamicAvatarViewList.get(micBean.getPosition()).unBankMic();
+                            } else if (micBean.getState() == MicState.CLOSE.getState()) {
+                                dynamicAvatarViewList.get(micBean.getPosition()).bankMic();
+                            } else if (micBean.getState() == MicState.LOCK.getState()) {
+                                dynamicAvatarViewList.get(micBean.getPosition()).lockMic();
+                            }
                         }
                     });
+                }
+                EventBus.getDefault().postSticky(new Event.EventMicBean(micBean));
+                //处理由于各种原因离开，比如说用户手动杀了进程，再进来时初始化，如果下发的麦位信息中有自己，则执行上麦操作
+                if (CacheManager.getInstance().getUserId().equals(micBean.getUserId())) {
+                    SLog.e(SLog.TAG_SEAL_MIC, "initMic：加入房间时麦位上有我，上麦");
+                    chatRoomViewModel.switchMic(roomId,
+                            CacheManager.getInstance().getUserRoleType(),
+                            micBean.getPosition() == 0
+                                    ? UserRoleType.HOST.getValue()
+                                    : UserRoleType.CONNECT_MIC.getValue(),
+                            new SealMicResultCallback<String>() {
+                                @Override
+                                public void onSuccess(String stringStringMap) {
+                                    SLog.e(SLog.TAG_SEAL_MIC, "初始化的麦位信息中已经包含刚加入此房间的自己，上麦成功");
+                                    EventBus.getDefault().post(
+                                            micBean.getPosition() == 0
+                                                    ? new Event.EventUserRoleType(UserRoleType.HOST, true)
+                                                    : new Event.EventUserRoleType(UserRoleType.CONNECT_MIC, true));
+                                    //上麦成功之后默认麦克风可用
+                                    if (micBean.getState() == MicState.CLOSE.getState()) {
+                                        fragmentChatRoomBinding.chatroomVoiceIn.setSelected(true);
+                                        RTCClient.getInstance().setLocalMicEnable(false);
+                                    }
+                                    if (micBean.getState() == MicState.NORMAL.getState()) {
+                                        fragmentChatRoomBinding.chatroomVoiceIn.setSelected(false);
+                                        RTCClient.getInstance().setLocalMicEnable(true);
+                                    }
+                                    //更新micBean信息
+                                    CacheManager.getInstance().cacheMicBean(micBean);
+                                    //更新本地的麦位信息缓存
+                                    localMicBeanMap.put(micBean.getPosition(), micBean);
+                                }
 
+                                @Override
+                                public void onFail(int errorCode) {
+                                    SLog.e(SLog.TAG_SEAL_MIC, "初始化的麦位信息中已经包含刚加入此房间的自己，上麦失败");
+                                }
+                            });
                 }
             }
 
             @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "获取正在讲话的KV信息失败，错误码为: " + errorCode);
-//                ToastUtil.showToast("获取正在讲话的KV信息失败，错误码为: " + errorCode);
-                NavOptionsRouterManager.getInstance().backUp(getView());
+            public void onFail(int errorCode) {
+                SLog.e(SLog.TAG_SEAL_MIC, "获取初始化麦位信息失败: " + errorCode);
             }
         });
     }
 
-    private void initMic() {
-        //获取全部麦位的KV
-        RoomManager.getInstance().getAllChatRoomMic(roomId, new RongIMClient.ResultCallback<Map<String, String>>() {
-            @Override
-            public void onSuccess(Map<String, String> stringStringMap) {
-                //根据KV判断，如果对应的麦位上有人，则用对应的信息填充麦位
-                RoomManager.getInstance().transMicBean(stringStringMap, new SealMicResultCallback<MicBean>() {
-                    @Override
-                    public void onSuccess(final MicBean micBean) {
-                        //初始化麦位时本地保存一份麦位map
-                        localMicBeanMap.put(micBean.getPosition(), micBean);
-                        userIdList = new ArrayList<>();
-                        userIdList.add(micBean.getUserId());
-                        chatRoomViewModel.userBatch(userIdList);
-                        //请求完后更新V层
-                        //Can't access the Fragment View's LifecycleOwner when getView() is null i.e., before onCreateView() or after onDestroyView()
-                        if (getView() != null) {
-                            chatRoomViewModel.getUserinfolistRepoLiveData().observe(getViewLifecycleOwner(), new Observer<NetResult<List<RoomMemberRepo.MemberBean>>>() {
-                                @Override
-                                public void onChanged(NetResult<List<RoomMemberRepo.MemberBean>> listNetResult) {
-                                    if (listNetResult != null && listNetResult.getData().size() != 0) {
-//                                        dynamicAvatarViewList.get(micBean.getPosition()).stopSpeak();
-                                        GlideManager.getInstance().setUrlImage(fragmentChatRoomBinding.getRoot(),
-                                                listNetResult.getData().get(0).getPortrait(),
-                                                dynamicAvatarViewList.get(micBean.getPosition()).getUserImg());
-                                        micTextLayoutList.get(micBean.getPosition()).HasMic(listNetResult.getData().get(0).getUserName());
-                                    }
-                                    if (micBean.getState() == MicState.NORMAL.getState()) {
-                                        dynamicAvatarViewList.get(micBean.getPosition()).unBankMic();
-                                    } else if (micBean.getState() == MicState.CLOSE.getState()) {
-                                        dynamicAvatarViewList.get(micBean.getPosition()).bankMic();
-                                    } else if (micBean.getState() == MicState.LOCK.getState()) {
-                                        dynamicAvatarViewList.get(micBean.getPosition()).lockMic();
-                                    }
-                                }
-                            });
-                        }
-                        EventBus.getDefault().postSticky(new Event.EventMicBean(micBean));
-                        //处理由于各种原因离开，比如说用户手动杀了进程，再进来时初始化，如果下发的麦位信息中有自己，则执行上麦操作
-                        if (CacheManager.getInstance().getUserId().equals(micBean.getUserId())) {
-                            SLog.e(SLog.TAG_SEAL_MIC, "initMic：加入房间时麦位上有我，上麦");
-                            chatRoomViewModel.switchMic(roomId,
-                                    CacheManager.getInstance().getUserRoleType(),
-                                    micBean.getPosition() == 0
-                                            ? UserRoleType.HOST.getValue()
-                                            : UserRoleType.CONNECT_MIC.getValue(),
-                                    new SealMicResultCallback<Map<String, String>>() {
-                                        @Override
-                                        public void onSuccess(Map<String, String> stringStringMap) {
-                                            SLog.e(SLog.TAG_SEAL_MIC, "初始化的麦位信息中已经包含刚加入此房间的自己，上麦成功");
-                                            EventBus.getDefault().post(
-                                                    micBean.getPosition() == 0
-                                                            ? new Event.EventUserRoleType(UserRoleType.HOST, true)
-                                                            : new Event.EventUserRoleType(UserRoleType.CONNECT_MIC, true));
-                                            //上麦成功之后默认麦克风可用
-                                            if (micBean.getState() == MicState.CLOSE.getState()) {
-                                                fragmentChatRoomBinding.chatroomVoiceIn.setSelected(true);
-                                                RTCClient.getInstance().setLocalMicEnable(false);
-                                            }
-                                            if (micBean.getState() == MicState.NORMAL.getState()) {
-                                                fragmentChatRoomBinding.chatroomVoiceIn.setSelected(false);
-                                                RTCClient.getInstance().setLocalMicEnable(true);
-                                            }
-                                            //更新micBean信息
-                                            CacheManager.getInstance().cacheMicBean(micBean);
-                                            //更新本地的麦位信息缓存
-                                            localMicBeanMap.put(micBean.getPosition(), micBean);
-                                        }
-
-                                        @Override
-                                        public void onFail(int errorCode) {
-                                            SLog.e(SLog.TAG_SEAL_MIC, "初始化的麦位信息中已经包含刚加入此房间的自己，上麦失败");
-                                        }
-                                    });
-                        }
-                    }
-
-                    @Override
-                    public void onFail(int errorCode) {
-                        SLog.e(SLog.TAG_SEAL_MIC, "获取初始化麦位信息失败: " + errorCode);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                SLog.e(SLog.TAG_SEAL_MIC, "获取全部麦位的KV信息失败，错误码为: " + errorCode);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void initMicError(Event.ChatRoomKVSyncMicErrorEvent chatRoomKVSyncErrorEvent) {
+        IRongCoreEnum.CoreErrorCode coreErrorCode = chatRoomKVSyncErrorEvent.getCoreErrorCode();
+        SLog.e(SLog.TAG_SEAL_MIC, "获取全部麦位的KV信息失败，错误码为: " + coreErrorCode);
 //                ToastUtil.showToast("获取全部麦位的KV信息失败，错误码为: " + errorCode);
-                NavOptionsRouterManager.getInstance().backUp(getView());
-            }
-        });
+//        NavOptionsRouterManager.getInstance().backUp(getView());
     }
-
 
     public void clickMic(final int position) {
         try {

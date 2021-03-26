@@ -7,7 +7,6 @@ import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
 
 import cn.rongcloud.sealmicandroid.R;
-import cn.rongcloud.sealmicandroid.common.factory.dialog.base.SealMicDialogFactory;
 
 /**
  * 从中部弹出的dialog

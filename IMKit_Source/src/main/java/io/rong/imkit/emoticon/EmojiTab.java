@@ -17,7 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import io.rong.imkit.R;
 import io.rong.imkit.utilities.ExtensionHistoryUtil;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.RongCoreClient;
 
 public class EmojiTab implements IEmoticonTab {
 
@@ -42,7 +42,7 @@ public class EmojiTab implements IEmoticonTab {
 
     @Override
     public View obtainTabPager(Context context) {
-        mUserId = RongIMClient.getInstance().getCurrentUserId();
+        mUserId = RongCoreClient.getInstance().getCurrentUserId();
         return initView(context);
     }
 

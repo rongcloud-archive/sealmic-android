@@ -20,7 +20,8 @@ import cn.rongcloud.sealmicandroid.net.client.HttpClient;
 import cn.rongcloud.sealmicandroid.util.PatternUtil;
 import cn.rongcloud.sealmicandroid.util.ToastUtil;
 import cn.rongcloud.sealmicandroid.util.log.SLog;
-import io.rong.imlib.RongIMClient;
+import io.rong.imlib.IRongCoreCallback;
+import io.rong.imlib.IRongCoreEnum;
 
 /**
  * 登录VM
@@ -123,7 +124,7 @@ public class LoginViewModel extends ViewModel {
                             final String portrait = userLoginRepo.getPortrait();
                             final int userType = userLoginRepo.getType();
                             IMClient.getInstance().disconnect();
-                            IMClient.getInstance().connect(imToken, new RongIMClient.ConnectCallback() {
+                            IMClient.getInstance().connect(imToken, new IRongCoreCallback.ConnectCallback() {
                                 @Override
                                 public void onSuccess(String s) {
                                     SLog.e(SLog.TAG_SEAL_MIC, "用户登录并连接IM");
@@ -142,7 +143,7 @@ public class LoginViewModel extends ViewModel {
                                 }
 
                                 @Override
-                                public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
+                                public void onError(IRongCoreEnum.ConnectionErrorCode connectionErrorCode) {
                                     if (connectionErrorCode.getValue() == 20005) {
                                         ToastUtil.showToast(
                                                 SealMicApp.getApplication().getResources().getString(R.string.send_code_invalid));
@@ -150,9 +151,9 @@ public class LoginViewModel extends ViewModel {
                                 }
 
                                 @Override
-                                public void onDatabaseOpened(RongIMClient.DatabaseOpenStatus databaseOpenStatus) {
-                                }
+                                public void onDatabaseOpened(IRongCoreEnum.DatabaseOpenStatus databaseOpenStatus) {
 
+                                }
                             });
                         }
                     }
@@ -197,19 +198,19 @@ public class LoginViewModel extends ViewModel {
                 CacheManager.getInstance().cacheToken(refreshTokenRepo.getImToken());
                 IMClient.getInstance().disconnect();
                 //连接IM
-                IMClient.getInstance().connect(refreshTokenRepo.getImToken(), new RongIMClient.ConnectCallback() {
+                IMClient.getInstance().connect(refreshTokenRepo.getImToken(), new IRongCoreCallback.ConnectCallback() {
                     @Override
                     public void onSuccess(String s) {
                         SLog.e(SLog.TAG_SEAL_MIC, "用户刷新Token并连接IM成功");
                     }
 
                     @Override
-                    public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
+                    public void onError(IRongCoreEnum.ConnectionErrorCode connectionErrorCode) {
                         SLog.e(SLog.TAG_SEAL_MIC, "用户刷新Token并连接IM失败：" + connectionErrorCode.getValue());
                     }
 
                     @Override
-                    public void onDatabaseOpened(RongIMClient.DatabaseOpenStatus databaseOpenStatus) {
+                    public void onDatabaseOpened(IRongCoreEnum.DatabaseOpenStatus databaseOpenStatus) {
 
                     }
                 });
@@ -234,7 +235,7 @@ public class LoginViewModel extends ViewModel {
                     final String userPortrait = visitorLoginRepo.getPortrait();
                     final int userType = visitorLoginRepo.getType();
                     IMClient.getInstance().disconnect();
-                    IMClient.getInstance().connect(imToken, new RongIMClient.ConnectCallback() {
+                    IMClient.getInstance().connect(imToken, new IRongCoreCallback.ConnectCallback() {
                         @Override
                         public void onSuccess(String s) {
                             SLog.e(SLog.TAG_SEAL_MIC, "游客登录并连接IM");
@@ -252,8 +253,8 @@ public class LoginViewModel extends ViewModel {
                         }
 
                         @Override
-                        public void onError(RongIMClient.ConnectionErrorCode connectionErrorCode) {
-                            if (connectionErrorCode.equals(RongIMClient.ConnectionErrorCode.RC_CONN_TOKEN_INCORRECT)) {
+                        public void onError(IRongCoreEnum.ConnectionErrorCode connectionErrorCode) {
+                            if (connectionErrorCode.equals(IRongCoreEnum.ConnectionErrorCode.RC_CONN_TOKEN_INCORRECT)) {
                                 //从 获取新 token，并重连
 
 
@@ -261,7 +262,7 @@ public class LoginViewModel extends ViewModel {
                         }
 
                         @Override
-                        public void onDatabaseOpened(RongIMClient.DatabaseOpenStatus databaseOpenStatus) {
+                        public void onDatabaseOpened(IRongCoreEnum.DatabaseOpenStatus databaseOpenStatus) {
 
                         }
 
