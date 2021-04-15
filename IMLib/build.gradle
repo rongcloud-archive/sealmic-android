@@ -7,7 +7,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 20210325
-        versionName "5.1.0.1"
+        versionName "5.1.1"
     }
 
     sourceSets {
